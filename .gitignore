@@ -1,0 +1,13 @@
+# Temporary & system files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local server / kit archives
+*.zip
+wordpress-kit/

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C795"/>
+      <stop offset="50%" stop-color="#C5A880"/>
+      <stop offset="100%" stop-color="#9A7B4F"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F4330"/>
+      <stop offset="100%" stop-color="#072318"/>
+    </linearGradient>
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Emblem / Monogram Icon -->
+  <g transform="translate(15, 10)">
+    <!-- Base geometric medallion -->
+    <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#emeraldGrad)" filter="url(#subtleShadow)"/>
+    <rect x="7" y="7" width="86" height="86" rx="20" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.8"/>
+    
+    <!-- Stylized Travel Crescent & Compass Wing -->
+    <path d="M 50 18 C 32 18, 18 32, 18 50 C 18 68, 32 82, 50 82 C 40 76, 32 64, 32 50 C 32 36, 40 24, 50 18 Z" fill="url(#goldGrad)" />
+    
+    <!-- Stylized Minaret / Star of Journey -->
+    <circle cx="50" cy="30" r="3.5" fill="#FFFFFF"/>
+    
+    <!-- Dynamic flight sweep representing Tours & Movement -->
+    <path d="M 38 65 Q 56 42 78 34 Q 60 52 52 72 Z" fill="#FFFFFF" fill-opacity="0.95"/>
+    <path d="M 44 72 Q 62 58 75 48" stroke="url(#goldGrad)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Typography: CHALLENGE -->
+  <text x="130" y="58" font-family="'Playfair Display', Georgia, serif" font-size="34" font-weight="700" letter-spacing="4" fill="#0A2E20">
+    CHALLENGE
+  </text>
+
+  <!-- Divider Rule with Gold Diamond -->
+  <line x1="132" y1="72" x2="490" y2="72" stroke="url(#goldGrad)" stroke-width="1.2" stroke-opacity="0.7"/>
+  <polygon points="311,69 315,72 311,75 307,72" fill="url(#goldGrad)"/>
+
+  <!-- Subtitle: TRAVEL & TOURS -->
+  <text x="132" y="93" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="13" font-weight="600" letter-spacing="6.5" fill="#C5A880">
+    TRAVEL &amp; TOURS
+  </text>
+  
+  <text x="405" y="93" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="11" font-weight="500" letter-spacing="2" fill="#718096">
+    • MÉDÉA
+  </text>
+</svg>
