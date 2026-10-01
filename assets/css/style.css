@@ -753,21 +753,19 @@ h1, h2, h3, h4, h5, h6 {
    CARTE INTERACTIVE GLASSMORPHISM LUXE (GAUCHE RTL)
    ========================================================================== */
 .hero-glass-card {
-  background: rgba(9, 23, 39, 0.78);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1.5px solid rgba(212, 175, 55, 0.35);
+  background: linear-gradient(165deg, #0e2338 0%, #061524 100%);
+  border: 2px solid #D4AF37;
   border-radius: 20px;
   padding: 32px 28px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 50px rgba(212, 175, 55, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.88), 0 0 40px rgba(212, 175, 55, 0.22);
   position: relative;
   overflow: hidden;
   transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .hero-glass-card:hover {
-  border-color: rgba(212, 175, 55, 0.6);
-  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.8), 0 0 60px rgba(212, 175, 55, 0.22);
+  border-color: #F5D77F;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 55px rgba(212, 175, 55, 0.35);
 }
 
 .glass-card-top-light {
@@ -956,15 +954,19 @@ h1, h2, h3, h4, h5, h6 {
 .glass-input-select,
 .glass-input-text {
   width: 100%;
-  padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  height: 48px;
+  padding: 0 16px;
+  background: #051322;
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
   border-radius: 10px;
   color: #FFFFFF;
   font-size: 0.92rem;
   font-family: var(--font-body);
-  transition: all 0.25s ease;
+  font-weight: 600;
   outline: none;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+  color-scheme: dark;
 }
 
 .glass-input-select {
@@ -972,6 +974,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-appearance: none;
   cursor: pointer;
   padding-left: 36px;
+  line-height: 48px;
 }
 
 .glass-select-arrow {
@@ -979,22 +982,22 @@ h1, h2, h3, h4, h5, h6 {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.7rem;
+  color: #D4AF37;
+  font-size: 0.75rem;
   pointer-events: none;
 }
 
 .glass-input-select option {
-  background: #0B1B2B;
+  background: #061525;
   color: #FFFFFF;
   padding: 12px;
 }
 
 .glass-input-select:focus,
 .glass-input-text:focus {
-  border-color: #D4AF37;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+  border-color: #F5D77F;
+  background: #091c33;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
 }
 
 .glass-fields-duo {
@@ -1006,20 +1009,25 @@ h1, h2, h3, h4, h5, h6 {
 /* Bouton d'Action avec Sheen Effect */
 .btn-glass-action {
   width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #D4AF37 0%, #F59E0B 100%);
+  height: 52px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, #FCE38A 0%, #D4AF37 50%, #B8860B 100%);
   color: #071E33;
   border: none;
-  border-radius: 10px;
-  font-size: 1.05rem;
-  font-weight: 800;
+  border-radius: 12px;
+  font-size: 1.08rem;
+  font-weight: 900;
   font-family: var(--font-body);
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.45);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 4px;
+  text-decoration: none;
 }
 
 .btn-glass-action:hover {
