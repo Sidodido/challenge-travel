@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initCounters();
   initArticleModal();
   initHeroQuickBooking();
+  applyAdminCustomizations();
+});
+
+window.addEventListener('storage', () => {
+  applyAdminCustomizations();
 });
 
 /* ==========================================================================
@@ -375,7 +380,7 @@ function updateQueryParam(lang) {
    ========================================================================== */
 function initContextualWhatsApp() {
   const waBtn = document.querySelector('.whatsapp-btn');
-  const phone = '213773496112';
+  const phone = getAdminWhatsApp();
   const pagePath = window.location.pathname.toLowerCase();
 
   let message = "السلام عليكم، أود التواصل مع وكالة تشالنج ترافل آند تورز.";
@@ -835,9 +840,168 @@ function initHeroQuickBooking() {
       message += `\n- رقم هاتفي للتواصل: ${phone}`;
     }
 
-    const whatsappUrl = `https://wa.me/213773496112?text=${encodeURIComponent(message)}`;
+    const waPhone = getAdminWhatsApp();
+    const whatsappUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   });
 }
+
+/* ==========================================================================
+   11. GESTION DES DONNÉES D'ADMINISTRATION DYNAMIQUES (DASHBOARD VERCEL)
+   ========================================================================== */
+function getAdminWhatsApp() {
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data && data.whatsapp) {
+        return data.whatsapp.replace(/[^0-9]/g, '');
+      }
+    }
+  } catch (e) {}
+  return '213773496112';
+}
+
+function getAdminPhone() {
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data && data.phone1) {
+        return data.phone1;
+      }
+    }
+  } catch (e) {}
+  return '0773 496 112';
+}
+
+function applyAdminCustomizations() {
+  const saved = localStorage.getItem('challenge_travel_content');
+  if (!saved) return;
+
+  try {
+    const data = JSON.parse(saved);
+    if (!data) return;
+
+    // 1. Mise à jour des téléphones (liens tel: et affichage)
+    if (data.phone1) {
+      const cleanPhone = data.phone1.replace(/\s+/g, '');
+      document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+        link.href = `tel:${cleanPhone}`;
+        const textNodes = Array.from(link.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+        textNodes.forEach(t => {
+          if (/\d/.test(t.nodeValue)) {
+            t.nodeValue = ` ${data.phone1} `;
+          }
+        });
+      });
+
+      document.querySelectorAll('.topbar-contact-item, .contact-value, .footer-contact-item').forEach(el => {
+        if (el.textContent.includes('0773') || el.textContent.includes('0773 496 112')) {
+          el.innerHTML = el.innerHTML.replace(/0773\s*496\s*112/g, data.phone1);
+        }
+      });
+    }
+
+    // 2. Mise à jour de WhatsApp
+    if (data.whatsapp) {
+      const cleanWa = data.whatsapp.replace(/[^0-9]/g, '');
+      document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+        try {
+          const url = new URL(link.href);
+          const textParam = url.searchParams.get('text');
+          link.href = `https://wa.me/${cleanWa}${textParam ? `?text=${encodeURIComponent(textParam)}` : ''}`;
+        } catch(e) {
+          link.href = `https://wa.me/${cleanWa}`;
+        }
+      });
+    }
+
+    // 3. Email de contact et redirection formulaires
+    if (data.email) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+        link.href = `mailto:${data.email}`;
+        if (link.textContent.includes('@')) {
+          link.textContent = data.email;
+        }
+      });
+    }
+
+    if (data.formEmail) {
+      document.querySelectorAll('form[action*="formspree.io"]').forEach(form => {
+        form.action = `https://formspree.io/f/${data.formEmail}`;
+        const hiddenTo = form.querySelector('input[name="_to"]');
+        if (hiddenTo) hiddenTo.value = data.formEmail;
+      });
+    }
+
+    // 4. Hero Section (titre, sous-titre, badge)
+    if (data.heroBadge) {
+      const badge = document.querySelector('.hero-badge span:last-child');
+      if (badge) badge.textContent = data.heroBadge;
+    }
+
+    if (data.heroTitle1 || data.heroTitleAccent) {
+      const heroTitle = document.querySelector('.hero-title');
+      if (heroTitle) {
+        let html = '';
+        if (data.heroTitle1) {
+          html += `${data.heroTitle1}<br>`;
+        }
+        if (data.heroTitleAccent) {
+          html += `<span class="hero-title-accent">${data.heroTitleAccent}</span>`;
+        }
+        heroTitle.innerHTML = html;
+      }
+    }
+
+    if (data.heroSubtitle) {
+      const heroSub = document.querySelector('.hero-subtitle');
+      if (heroSub) heroSub.textContent = data.heroSubtitle;
+    }
+
+    // 5. Options du sélecteur rapide de forfaits dans le Hero
+    if (data.pkg1Title || data.pkg2Title || data.pkg3Title) {
+      const packageSelect = document.getElementById('heroPackageSelect');
+      if (packageSelect && packageSelect.options) {
+        if (data.pkg1Title && packageSelect.options[0]) {
+          const priceSuffix = data.pkg1Price ? ` (${data.pkg1Price})` : '';
+          packageSelect.options[0].textContent = `${data.pkg1Title}${priceSuffix}`;
+          packageSelect.options[0].value = data.pkg1Title;
+        }
+        if (data.pkg2Title && packageSelect.options[1]) {
+          const priceSuffix = data.pkg2Price ? ` (${data.pkg2Price})` : '';
+          packageSelect.options[1].textContent = `${data.pkg2Title}${priceSuffix}`;
+          packageSelect.options[1].value = data.pkg2Title;
+        }
+        if (data.pkg3Title && packageSelect.options[2]) {
+          const priceSuffix = data.pkg3Price ? ` (${data.pkg3Price})` : '';
+          packageSelect.options[2].textContent = `${data.pkg3Title}${priceSuffix}`;
+          packageSelect.options[2].value = data.pkg3Title;
+        }
+      }
+    }
+
+    // 6. Titres d'articles / actualités
+    const newsCards = document.querySelectorAll('.news-card');
+    if (newsCards.length > 0) {
+      if (data.art1Title && newsCards[0]) {
+        const titleEl = newsCards[0].querySelector('.news-title');
+        if (titleEl) titleEl.textContent = data.art1Title;
+      }
+      if (data.art2Title && newsCards[1]) {
+        const titleEl = newsCards[1].querySelector('.news-title');
+        if (titleEl) titleEl.textContent = data.art2Title;
+      }
+      if (data.art3Title && newsCards[2]) {
+        const titleEl = newsCards[2].querySelector('.news-title');
+        if (titleEl) titleEl.textContent = data.art3Title;
+      }
+    }
+  } catch (err) {
+    console.error('Error applying admin customizations:', err);
+  }
+}
+
 
 

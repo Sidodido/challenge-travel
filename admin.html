@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم تشالنج ترافل — Espace Administration</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon-192.png?v=2">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png?v=2">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy-950: #061524;
+      --navy-900: #0B1B2B;
+      --navy-850: #0E243A;
+      --navy-800: #132E4A;
+      --gold-400: #E5C795;
+      --gold-500: #D4AF37;
+      --gold-600: #B89758;
+      --text-main: #FFFFFF;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --border-subtle: rgba(212, 175, 55, 0.25);
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--navy-950);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       LOGIN VIEW
+       ========================================================================== */
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: radial-gradient(circle at center, rgba(14, 36, 58, 0.9) 0%, var(--navy-950) 80%);
+    }
+
+    .login-card {
+      background: rgba(11, 27, 43, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 175, 55, 0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .login-logo {
+      height: 60px;
+      width: auto;
+      margin-bottom: 20px;
+    }
+
+    .login-badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-400);
+      border: 1px solid var(--border-subtle);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .login-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .login-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      text-align: right;
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      color: #FFFFFF;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--gold-500);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #0B1B2B;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+    }
+
+    .login-error {
+      display: none;
+      background: rgba(239, 68, 68, 0.15);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+    }
+
+    /* ==========================================================================
+       ADMIN DASHBOARD VIEW
+       ========================================================================== */
+    .dashboard-view {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: rgba(11, 27, 43, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .admin-logo {
+      height: 42px;
+      width: auto;
+    }
+
+    .admin-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 50px;
+    }
+
+    .admin-status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    .admin-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      flex: 1;
+    }
+
+    /* Sidebar Navigation */
+    .admin-sidebar {
+      background: var(--navy-900);
+      border-left: 1px solid var(--border-subtle);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-btn {
+      width: 100%;
+      text-align: right;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+    }
+
+    .sidebar-btn.active {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-400);
+      border-color: var(--border-subtle);
+      font-weight: 700;
+    }
+
+    /* Main Content Area */
+    .admin-main {
+      padding: 32px;
+      background: var(--navy-950);
+      overflow-y: auto;
+    }
+
+    .admin-card {
+      background: var(--navy-900);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .admin-card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--gold-400);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .alert-banner {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      background: #064E3B;
+      color: #A7F3D0;
+      border: 1px solid #059669;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .admin-sidebar {
+        border-left: none;
+        border-bottom: 1px solid var(--border-subtle);
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. VUE DE CONNEXION SÉCURISÉE
+       ======================================================================== -->
+  <div id="loginView" class="login-container">
+    <div class="login-card">
+      <img src="assets/images/logo.png" alt="Challenge Travel & Tours" class="login-logo">
+      <br>
+      <span class="login-badge">لوحة التحكم • Vercel Admin</span>
+      <h1 class="login-title">تسجيل الدخول</h1>
+      <p class="login-desc">أدخل بيانات المسؤول للوصول إلى لوحة تعديل الموقع</p>
+
+      <div id="loginError" class="login-error">اسم المستخدم أو كلمة المرور غير صحيحة</div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="usernameInput">اسم المستخدم</label>
+          <input type="text" id="usernameInput" class="form-input" placeholder="admin" required dir="ltr">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passwordInput">كلمة المرور</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" required dir="ltr">
+        </div>
+
+        <button type="submit" class="btn-gold" style="margin-top: 10px;">
+          <span>دخول إلى لوحة التحكم</span>
+          <span>←</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. VUE PRINCIPALE DU DASHBOARD ADMIN
+       ======================================================================== -->
+  <div id="dashboardView" class="dashboard-view">
+    <header class="admin-header">
+      <div class="admin-brand">
+        <img src="assets/images/logo.png" alt="Challenge Travel & Tours" class="admin-logo">
+        <div class="admin-status">
+          <span class="admin-status-dot"></span>
+          <span>الموقع مباشر على Vercel</span>
+        </div>
+      </div>
+
+      <div class="admin-header-actions">
+        <a href="index.html" target="_blank" class="btn-secondary">
+          <span>👁️ معاينة الموقع</span>
+        </a>
+        <a href="https://challengetravel.zidane-dev.dz/wp-admin" target="_blank" rel="noopener" class="btn-secondary" title="الوصول إلى ووردبريس الخارجي">
+          <span>🌐 خادم ووردبريس</span>
+        </a>
+        <button type="button" id="btnSaveAll" class="btn-gold" style="width: auto; padding: 8px 20px; font-size: 0.95rem;">
+          <span>💾 حفظ كافة التعديلات</span>
+        </button>
+        <button type="button" id="btnLogout" class="btn-secondary" style="color: #F87171; border-color: rgba(248, 113, 113, 0.3);">
+          <span>خروج</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-layout">
+      <!-- Barre latérale des onglets -->
+      <aside class="admin-sidebar">
+        <button type="button" class="sidebar-btn active" data-tab="tabContact">
+          <span>📞</span> بيانات الاتصال ومقر الوكالة
+        </button>
+        <button type="button" class="sidebar-btn" data-tab="tabHero">
+          <span>🕌</span> الواجهة الرئيسية (الهيرو)
+        </button>
+        <button type="button" class="sidebar-btn" data-tab="tabPackages">
+          <span>🕋</span> باقات وأسعار العمرة
+        </button>
+        <button type="button" class="sidebar-btn" data-tab="tabArticles">
+          <span>📰</span> الأخبار والمقالات
+        </button>
+        <button type="button" class="sidebar-btn" data-tab="tabSecurity">
+          <span>🔒</span> الأمان وكلمة المرور
+        </button>
+      </aside>
+
+      <!-- Zone de contenu -->
+      <main class="admin-main">
+
+        <!-- TAB 1 : CONTACT & COORDONNÉES -->
+        <section id="tabContact" class="tab-content">
+          <div class="admin-card">
+            <h2 class="admin-card-title">📞 بيانات الاتصال الرسمية ومقر الوكالة</h2>
+            <p class="admin-card-desc">تعديل أرقام الهواتف، الواتساب، البريد الإلكتروني، وعنوان المقر بالجزائر العاصمة.</p>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف الرئيسي</label>
+                <input type="text" id="cfgPhone1" class="form-input" dir="ltr" value="0773 496 112">
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف الثاني</label>
+                <input type="text" id="cfgPhone2" class="form-input" dir="ltr" value="0660 037 877">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف الثابت</label>
+                <input type="text" id="cfgPhoneFix" class="form-input" dir="ltr" value="028 269 999">
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم الواتساب المباشر (بالرمز الدولي)</label>
+                <input type="text" id="cfgWhatsApp" class="form-input" dir="ltr" value="213773496112">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني للوكالة</label>
+                <input type="email" id="cfgEmail" class="form-input" dir="ltr" value="challenge.atv@gmail.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">البريد المستلم لاستمارات الموقع (Destinataire)</label>
+                <input type="email" id="cfgFormEmail" class="form-input" dir="ltr" value="zidanesidahmed18@gmail.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">المقر الرئيسي للوكالة</label>
+              <input type="text" id="cfgAddress" class="form-input" value="الجزائر العاصمة، الجزائر">
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2 : HERO SECTION -->
+        <section id="tabHero" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <h2 class="admin-card-title">🕌 نصوص وواجهة الهيرو الرئيسية</h2>
+            <p class="admin-card-desc">تعديل الشارة العلوية، العنوان الرئيسي الجذاب، والفقرة الوصفية المرافقة.</p>
+
+            <div class="form-group">
+              <label class="form-label">الشارة العلوية (Badge)</label>
+              <input type="text" id="cfgHeroBadge" class="form-input" value="وكالة سياحة وأسفار معتمدة • الجزائر العاصمة">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">العنوان الرئيسي (السطر الأول)</label>
+              <input type="text" id="cfgHeroTitle1" class="form-input" value="رحلتكم الإيمانية تبدأ معنا">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">العنوان الرئيسي الملون (السطر الذهبي)</label>
+              <input type="text" id="cfgHeroTitleAccent" class="form-input" value="نحو أطهر بقاع الأرض بكل سكينة وطمأنينة">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">الفقرة الوصفية للهيرو</label>
+              <textarea id="cfgHeroSubtitle" class="form-textarea" rows="3">نرافقكم بمهنية وإخلاص لزيارة الحرمين الشريفين بأفضل باقات العمرة، وتسهيلات التأشيرة، وأرقى الفنادق القريبة من الحرم بأفضل الأسعار.</textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3 : FORFAITS OMRA -->
+        <section id="tabPackages" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <h2 class="admin-card-title">🕋 باقات وبرامج العمرة</h2>
+            <p class="admin-card-desc">إدارة عروض العمرة الحالية وأسعارها المعروضة في الصفحة الرئيسية.</p>
+
+            <div class="admin-card" style="background: rgba(255,255,255,0.03); margin-bottom: 16px;">
+              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الأولى : عمرة شهر رمضان المبارك</h3>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">عنوان الباقة</label>
+                  <input type="text" id="cfgPkg1Title" class="form-input" value="عمرة شهر رمضان المبارك">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
+                  <input type="text" id="cfgPkg1Price" class="form-input" value="235,000 دج">
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-card" style="background: rgba(255,255,255,0.03); margin-bottom: 16px;">
+              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الثانية : عمرة رجب وشعبان</h3>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">عنوان الباقة</label>
+                  <input type="text" id="cfgPkg2Title" class="form-input" value="عمرة رجب وشعبان (المولد والمناسبات)">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
+                  <input type="text" id="cfgPkg2Price" class="form-input" value="185,000 دج">
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-card" style="background: rgba(255,255,255,0.03);">
+              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الثالثة : عمرة VIP 5 نجوم</h3>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">عنوان الباقة</label>
+                  <input type="text" id="cfgPkg3Title" class="form-input" value="عمرة VIP فنادق 5 نجوم مطلة على الحرم">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
+                  <input type="text" id="cfgPkg3Price" class="form-input" value="320,000 دج">
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4 : ARTICLES -->
+        <section id="tabArticles" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <h2 class="admin-card-title">📰 الأخبار والإعلانات</h2>
+            <p class="admin-card-desc">تعديل عناوين المقالات المنشورة في قسم الأخبار والعروض.</p>
+
+            <div class="form-group">
+              <label class="form-label">عنوان المقال 1 (مناسك العمرة)</label>
+              <input type="text" id="cfgArt1Title" class="form-input" value="دليل المعتمر: خطوات أداء مناسك العمرة خطوة بخطوة بكل يسر وطمأنينة">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">عنوان المقال 2 (تأشيرات السعودية)</label>
+              <input type="text" id="cfgArt2Title" class="form-input" value="تأشيرة المملكة العربية السعودية: الوثائق والشروط الرسمية للمواطنين الجزائريين">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">عنوان المقال 3 (حجوزات الطيران)</label>
+              <input type="text" id="cfgArt3Title" class="form-input" value="نصائح لحجز تذاكر الطيران بأفضل الأسعار: دليلك لتوفير الوقت والجهد">
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5 : SÉCURITÉ -->
+        <section id="tabSecurity" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <h2 class="admin-card-title">🔒 أمان الحساب وتغيير كلمة المرور</h2>
+            <p class="admin-card-desc">يمكنك تعديل اسم المستخدم وكلمة المرور الخاصة بلوحة الإدارة في أي وقت.</p>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">اسم المستخدم الحالي</label>
+                <input type="text" id="cfgAdminUser" class="form-input" value="admin" dir="ltr">
+              </div>
+              <div class="form-group">
+                <label class="form-label">كلمة المرور الجديدة</label>
+                <input type="password" id="cfgAdminPass" class="form-input" placeholder="أدخل كلمة مرور جديدة" dir="ltr">
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap;">
+              <button type="button" id="btnUpdatePassword" class="btn-gold" style="width: auto; padding: 10px 24px;">
+                تحديث كلمة المرور
+              </button>
+              <button type="button" id="btnResetDefaults" class="btn-secondary" style="color: #FBBF24; border-color: rgba(251, 191, 36, 0.4);">
+                استرجاع البيانات الافتراضية
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <div id="alertBanner" class="alert-banner">
+    ✅ تم حفظ كافة التعديلات بنجاح !
+  </div>
+
+  <!-- ========================================================================
+       SCRIPTS GESTION ADMIN & SYNCHRONISATION
+       ======================================================================== -->
+  <script>
+    // Identifiants par défaut
+    const DEFAULT_USER = 'admin';
+    const DEFAULT_PASS = 'admin2026';
+
+    const loginView = document.getElementById('loginView');
+    const dashboardView = document.getElementById('dashboardView');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const btnLogout = document.getElementById('btnLogout');
+    const btnSaveAll = document.getElementById('btnSaveAll');
+    const alertBanner = document.getElementById('alertBanner');
+
+    // 1. Vérification session
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem('challenge_admin_logged');
+      if (isAuth === 'true') {
+        loginView.style.display = 'none';
+        dashboardView.style.display = 'flex';
+        loadAdminData();
+      } else {
+        loginView.style.display = 'flex';
+        dashboardView.style.display = 'none';
+      }
+    }
+
+    // 2. Connexion
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredUser = document.getElementById('usernameInput').value.trim();
+      const enteredPass = document.getElementById('passwordInput').value.trim();
+
+      const storedUser = localStorage.getItem('challenge_admin_user') || DEFAULT_USER;
+      const storedPass = localStorage.getItem('challenge_admin_pass') || DEFAULT_PASS;
+
+      if (enteredUser === storedUser && enteredPass === storedPass) {
+        sessionStorage.setItem('challenge_admin_logged', 'true');
+        loginError.style.display = 'none';
+        checkAuth();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    // 3. Déconnexion
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('challenge_admin_logged');
+      checkAuth();
+    });
+
+    // 4. Navigation par onglets
+    const sidebarBtns = document.querySelectorAll('.sidebar-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    sidebarBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sidebarBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(t => t.style.display = 'none');
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.style.display = 'block';
+      });
+    });
+
+    // 5. Chargement des données stockées
+    function loadAdminData() {
+      const saved = localStorage.getItem('challenge_travel_content');
+      if (!saved) return;
+
+      try {
+        const data = JSON.parse(saved);
+        if (data.phone1) document.getElementById('cfgPhone1').value = data.phone1;
+        if (data.phone2) document.getElementById('cfgPhone2').value = data.phone2;
+        if (data.phoneFix) document.getElementById('cfgPhoneFix').value = data.phoneFix;
+        if (data.whatsapp) document.getElementById('cfgWhatsApp').value = data.whatsapp;
+        if (data.email) document.getElementById('cfgEmail').value = data.email;
+        if (data.formEmail) document.getElementById('cfgFormEmail').value = data.formEmail;
+        if (data.address) document.getElementById('cfgAddress').value = data.address;
+
+        if (data.heroBadge) document.getElementById('cfgHeroBadge').value = data.heroBadge;
+        if (data.heroTitle1) document.getElementById('cfgHeroTitle1').value = data.heroTitle1;
+        if (data.heroTitleAccent) document.getElementById('cfgHeroTitleAccent').value = data.heroTitleAccent;
+        if (data.heroSubtitle) document.getElementById('cfgHeroSubtitle').value = data.heroSubtitle;
+
+        if (data.pkg1Title) document.getElementById('cfgPkg1Title').value = data.pkg1Title;
+        if (data.pkg1Price) document.getElementById('cfgPkg1Price').value = data.pkg1Price;
+        if (data.pkg2Title) document.getElementById('cfgPkg2Title').value = data.pkg2Title;
+        if (data.pkg2Price) document.getElementById('cfgPkg2Price').value = data.pkg2Price;
+        if (data.pkg3Title) document.getElementById('cfgPkg3Title').value = data.pkg3Title;
+        if (data.pkg3Price) document.getElementById('cfgPkg3Price').value = data.pkg3Price;
+
+        if (data.art1Title) document.getElementById('cfgArt1Title').value = data.art1Title;
+        if (data.art2Title) document.getElementById('cfgArt2Title').value = data.art2Title;
+        if (data.art3Title) document.getElementById('cfgArt3Title').value = data.art3Title;
+      } catch (e) {
+        console.error('Error loading config:', e);
+      }
+    }
+
+    // 6. Sauvegarde des données
+    btnSaveAll.addEventListener('click', () => {
+      const data = {
+        phone1: document.getElementById('cfgPhone1').value.trim(),
+        phone2: document.getElementById('cfgPhone2').value.trim(),
+        phoneFix: document.getElementById('cfgPhoneFix').value.trim(),
+        whatsapp: document.getElementById('cfgWhatsApp').value.trim(),
+        email: document.getElementById('cfgEmail').value.trim(),
+        formEmail: document.getElementById('cfgFormEmail').value.trim(),
+        address: document.getElementById('cfgAddress').value.trim(),
+
+        heroBadge: document.getElementById('cfgHeroBadge').value.trim(),
+        heroTitle1: document.getElementById('cfgHeroTitle1').value.trim(),
+        heroTitleAccent: document.getElementById('cfgHeroTitleAccent').value.trim(),
+        heroSubtitle: document.getElementById('cfgHeroSubtitle').value.trim(),
+
+        pkg1Title: document.getElementById('cfgPkg1Title').value.trim(),
+        pkg1Price: document.getElementById('cfgPkg1Price').value.trim(),
+        pkg2Title: document.getElementById('cfgPkg2Title').value.trim(),
+        pkg2Price: document.getElementById('cfgPkg2Price').value.trim(),
+        pkg3Title: document.getElementById('cfgPkg3Title').value.trim(),
+        pkg3Price: document.getElementById('cfgPkg3Price').value.trim(),
+
+        art1Title: document.getElementById('cfgArt1Title').value.trim(),
+        art2Title: document.getElementById('cfgArt2Title').value.trim(),
+        art3Title: document.getElementById('cfgArt3Title').value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('challenge_travel_content', JSON.stringify(data));
+      showAlert('✅ تم حفظ كافة التعديلات بنجاح !');
+    });
+
+    // 7. Mise à jour mot de passe
+    document.getElementById('btnUpdatePassword').addEventListener('click', () => {
+      const newUser = document.getElementById('cfgAdminUser').value.trim();
+      const newPass = document.getElementById('cfgAdminPass').value.trim();
+
+      if (!newUser) {
+        alert('يرجى إدخال اسم مستخدم صالح');
+        return;
+      }
+      if (newPass) {
+        localStorage.setItem('challenge_admin_pass', newPass);
+      }
+      localStorage.setItem('challenge_admin_user', newUser);
+      showAlert('🔒 تم تحديث بيانات الدخول بنجاح !');
+    });
+
+    // 8. Réinitialiser
+    document.getElementById('btnResetDefaults').addEventListener('click', () => {
+      if (confirm('هل أنت متأكد من استرجاع القيم الافتراضية؟')) {
+        localStorage.removeItem('challenge_travel_content');
+        localStorage.removeItem('challenge_admin_user');
+        localStorage.removeItem('challenge_admin_pass');
+        location.reload();
+      }
+    });
+
+    function showAlert(msg) {
+      alertBanner.textContent = msg;
+      alertBanner.style.display = 'block';
+      setTimeout(() => {
+        alertBanner.style.display = 'none';
+      }, 3500);
+    }
+
+    // Init
+    checkAuth();
+  </script>
+</body>
+</html>

@@ -11,6 +11,10 @@
       "dest": "/assets/$1"
     },
     {
+      "src": "/(wp-admin|admin|dashboard|wp-login\\.php)(/.*)?",
+      "dest": "/admin.html"
+    },
+    {
       "handle": "filesystem"
     },
     {
