@@ -871,25 +871,95 @@
           </div>
         </section>
 
-        <!-- TAB 4 : ARTICLES -->
+        <!-- TAB 5 : ARTICLES & ACTUALITÉS DYNAMIQUES -->
         <section id="tabArticles" class="tab-content" style="display: none;">
           <div class="admin-card">
-            <h2 class="admin-card-title">📰 الأخبار والإعلانات</h2>
-            <p class="admin-card-desc">تعديل عناوين المقالات المنشورة في قسم الأخبار والعروض.</p>
-
-            <div class="form-group">
-              <label class="form-label">عنوان المقال 1 (مناسك العمرة)</label>
-              <input type="text" id="cfgArt1Title" class="form-input" value="دليل المعتمر: خطوات أداء مناسك العمرة خطوة بخطوة بكل يسر وطمأنينة">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h2 class="admin-card-title">📰 إدارة الأخبار والمقالات والإرشادات</h2>
+                <p class="admin-card-desc" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+                  إضافة مقالات جديدة بالصور، الملخصات والمحتوى التفصيلي الكامل، أو تعديل وحذف المقالات الحالية لتنعكس فوراً على الموقع وصفحة الأخبار.
+                </p>
+              </div>
+              <button type="button" id="btnOpenNewArticle" class="btn-gold" style="width: auto; padding: 10px 22px;">
+                <span>➕ إضافة مقال جديد</span>
+              </button>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">عنوان المقال 2 (تأشيرات السعودية)</label>
-              <input type="text" id="cfgArt2Title" class="form-input" value="تأشيرة المملكة العربية السعودية: الوثائق والشروط الرسمية للمواطنين الجزائريين">
+            <!-- Formulaire Ajout / Édition Article (Repliable) -->
+            <div id="articleFormDrawer" class="admin-drawer" style="display: none; background: rgba(255,255,255,0.04); border: 1.5px solid var(--gold-500); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+              <h3 id="articleFormTitle" style="color: var(--gold-400); font-size: 1.2rem; margin-bottom: 18px;">➕ إضافة مقال جديد</h3>
+              <input type="hidden" id="articleEditId" value="">
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">عنوان المقال *</label>
+                  <input type="text" id="articleTitleInput" class="form-input" placeholder="مثال: دليل المعتمر: خطوات أداء مناسك العمرة خطوة بخطوة">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">تصنيف المقال (التصنيف أو الشارة) *</label>
+                  <input type="text" id="articleCatInput" class="form-input" placeholder="مثال: مناسك العمرة، تأشيرة السعودية، سياحة وطيران...">
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">تاريخ النشر *</label>
+                  <input type="text" id="articleDateInput" class="form-input" placeholder="مثال: 15 سبتمبر 2026">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">صورة المقال (رابط URL أو رفع من جهازك) *</label>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" id="articleImgUrlInput" class="form-input" placeholder="https://images.unsplash.com/..." dir="ltr">
+                    <label class="btn-secondary" style="white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center;">
+                      <span>📁 رفع صورة</span>
+                      <input type="file" id="articleFileInput" accept="image/*" style="display: none;">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Préréglages rapides d'images pour articles -->
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.82rem; color: var(--gold-400);">📸 أو اختر صورة نموذجية للمقال :</label>
+                <div class="presets-row" id="articlePresetsRow">
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80">🕋 مناسك العمرة</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80">🕌 المسجد النبوي</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&w=800&q=80">📄 تأشيرات وجوازات</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80">✈️ طيران ومطارات</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80">🌴 سياحة وسفر</button>
+                </div>
+              </div>
+
+              <!-- Prévisualisation image -->
+              <div id="articleImgPreviewBox" style="margin-bottom: 16px; display: none;">
+                <label class="form-label" style="font-size: 0.82rem;">معاينة صورة المقال :</label>
+                <img id="articleImgPreview" src="" alt="معاينة" style="height: 120px; width: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-subtle);">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">المقدمة / الملخص المختصر (يظهر في بطاقة المقال) *</label>
+                <textarea id="articleExcerptInput" class="form-textarea" rows="2" placeholder="أدخل ملخصاً جذاباً ومختصراً يوضح فكرة المقال في سطرين..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">المحتوى الكامل للمقال (يظهر عند النقر على المقال وقراءته كاملاً) *</label>
+                <textarea id="articleContentInput" class="form-textarea" rows="6" placeholder="اكتب نص المقال الكامل هنا. يمكنك كتابة عدة فقرات وسيقوم الموقع بتنسيقها وعرضها للقارئ في نافذة القراءة التفاعلية..."></textarea>
+              </div>
+
+              <div style="display: flex; gap: 12px;">
+                <button type="button" id="btnSaveArticle" class="btn-gold" style="width: auto; padding: 10px 28px;">
+                  <span>💾 حفظ المقال في الموقع</span>
+                </button>
+                <button type="button" id="btnCancelArticle" class="btn-secondary">
+                  <span>إلغاء</span>
+                </button>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">عنوان المقال 3 (حجوزات الطيران)</label>
-              <input type="text" id="cfgArt3Title" class="form-input" value="نصائح لحجز تذاكر الطيران بأفضل الأسعار: دليلك لتوفير الوقت والجهد">
+            <!-- Liste des Articles Actuels -->
+            <div id="adminArticlesList" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Rendu dynamique JS -->
             </div>
           </div>
         </section>
@@ -1063,8 +1133,39 @@
       }
     ];
 
+    const DEFAULT_ARTICLES = [
+      {
+        id: "art_1",
+        title: "دليل المعتمر: خطوات أداء مناسك العمرة خطوة بخطوة بكل يسر وطمأنينة",
+        category: "مناسك العمرة",
+        date: "15 سبتمبر 2026",
+        image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80",
+        excerpt: "تعرّف على أهم النصائح الصحية، تنظيم الحقائب، والإرشادات الشرعية والتنظيمية لضمان أداء مناسك العمرة بكل يسر وطمأنينة.",
+        content: "تتطلب رحلة العمرة استعداداً إيمانياً وبدنياً دقيقاً. نبدأ معكم من نية الإحرام والميقات، ثم الطواف حول الكعبة المشرفة سبعة أشواط مع ذكر الأدعية المستحبة، تليها صلاة ركعتين خلف مقام إبراهيم، ثم السعي بين الصفا والمروة، وختاماً بالحلق أو التقصير.\n\nتحرص وكالة تشالنج ترافل آند تورز بالجزائر العاصمة على توفير مرشدين دينيين ذوي كفاءة عالية يرافقون المعتمرين في كافة المناسك، إلى جانب تقديم الرعاية الطبية والإرشادات التنظيمية لتسهيل تنقلات كبار السن والعائلات بكل راحة وطمأنينة."
+      },
+      {
+        id: "art_2",
+        title: "تأشيرة المملكة العربية السعودية: الوثائق والشروط الرسمية للمواطنين الجزائريين",
+        category: "تأشيرات السعودية",
+        date: "02 سبتمبر 2026",
+        image: "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&w=800&q=80",
+        excerpt: "لتفادي أي تأخير في معالجة طلباتكم، يوضح لكم فريقنا الملف المطلوب بدقة (صلاحية جواز السفر، الصور، الاستمارات) ومراحل متابعة طلبكم حتى الاستلام.",
+        content: "أصبحت إجراءات الحصول على تأشيرة الدخول إلى المملكة العربية السعودية أكثر سلاسة وسرعة عبر المنصات الرسمية الحديثة. تتضمن المتطلبات الأساسية للمواطنين الجزائريين: جواز سفر ساري المفعول لمدة لا تقل عن 6 أشهر، صور شمسية حديثة بخلفية بيضاء، واستيفاء التأمين الطبي الإلزامي المعتمد.\n\nيقوم فريق وكالتنا بالجزائر العاصمة بتدقيق كافة الوثائق ورفعها على النظام الرسمي المعتمد، ومتابعة الملف لحظة بلحظة حتى صدور التأشيرة دون أي عناء من طرف الزبون، مع توفير نصائح خاصة بأنواع التأشيرات المتاحة (سياحية، عمرة، زيارة)."
+      },
+      {
+        id: "art_3",
+        title: "نصائح لحجز تذاكر الطيران بأفضل الأسعار: دليلك لتوفير الوقت والجهد",
+        category: "سياحة وطيران",
+        date: "25 أوت 2026",
+        image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
+        excerpt: "كيف تختار رحلتك الجوية المباشرة وتستفيد من أفضل الأسعار التنافسية؟ نصائح عملية يقدمها لكم مستشارو السياحة في وكالتنا.",
+        content: "يعتبر التخطيط المبكر لحجز رحلات الطيران العامل الأهم في الحصول على أفضل التخفيضات وتجنب الارتفاع المفاجئ في أسعار التذاكر، لا سيما في مواسم الذروة كالعطل المدرسية وشهر رمضان المبارك.\n\nنوصي دائماً باختيار الرحلات المباشرة من مطار الجزائر الدولي (هواري بومدين) نحو جدة أو المدينة المنورة لتفادي إرهاق الترانزيت، والتأكد من أوزان الأمتعة المسموح بها في التذكرة. كما نوفر في وكالة تشالنج ترافل خدمة المقارنة الفورية بين مختلف خطوط الطيران لاختيار التوقيت والأنسب لكم مع ضمان تأكيد المقاعد فوراً."
+      }
+    ];
+
     let currentPackages = [];
     let currentGallery = [];
+    let currentArticles = [];
 
     // Helper compression d'image côté client (Canvas)
     function compressImageFile(file, maxWidth, quality, callback) {
@@ -1128,10 +1229,6 @@
       if (data.heroTitleAccent) document.getElementById('cfgHeroTitleAccent').value = data.heroTitleAccent;
       if (data.heroSubtitle) document.getElementById('cfgHeroSubtitle').value = data.heroSubtitle;
 
-      if (data.art1Title) document.getElementById('cfgArt1Title').value = data.art1Title;
-      if (data.art2Title) document.getElementById('cfgArt2Title').value = data.art2Title;
-      if (data.art3Title) document.getElementById('cfgArt3Title').value = data.art3Title;
-
       // Charger les forfaits
       if (Array.isArray(data.packages) && data.packages.length > 0) {
         currentPackages = data.packages;
@@ -1147,6 +1244,14 @@
         currentGallery = JSON.parse(JSON.stringify(DEFAULT_GALLERY));
       }
       renderAdminGalleryList();
+
+      // Charger les articles et actualités
+      if (Array.isArray(data.articles) && data.articles.length > 0) {
+        currentArticles = data.articles;
+      } else {
+        currentArticles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+      }
+      renderAdminArticlesList();
     }
 
     // =========================================================================
@@ -1504,6 +1609,201 @@
       });
     }
 
+    // =========================================================================
+    // GESTIONNAIRE DES ARTICLES / ACTUALITÉS
+    // =========================================================================
+    const btnOpenNewArticle = document.getElementById('btnOpenNewArticle');
+    const articleFormDrawer = document.getElementById('articleFormDrawer');
+    const btnCancelArticle = document.getElementById('btnCancelArticle');
+    const btnSaveArticle = document.getElementById('btnSaveArticle');
+    const articleEditId = document.getElementById('articleEditId');
+    const articleTitleInput = document.getElementById('articleTitleInput');
+    const articleCatInput = document.getElementById('articleCatInput');
+    const articleDateInput = document.getElementById('articleDateInput');
+    const articleImgUrlInput = document.getElementById('articleImgUrlInput');
+    const articleFileInput = document.getElementById('articleFileInput');
+    const articleExcerptInput = document.getElementById('articleExcerptInput');
+    const articleContentInput = document.getElementById('articleContentInput');
+    const articleImgPreviewBox = document.getElementById('articleImgPreviewBox');
+    const articleImgPreview = document.getElementById('articleImgPreview');
+    const adminArticlesList = document.getElementById('adminArticlesList');
+
+    function resetArticleForm() {
+      articleEditId.value = '';
+      articleTitleInput.value = '';
+      articleCatInput.value = '';
+      articleDateInput.value = '';
+      articleImgUrlInput.value = '';
+      articleExcerptInput.value = '';
+      articleContentInput.value = '';
+      articleFileInput.value = '';
+      articleImgPreview.src = '';
+      articleImgPreviewBox.style.display = 'none';
+      document.getElementById('articleFormTitle').textContent = '➕ إضافة مقال جديد';
+    }
+
+    btnOpenNewArticle.addEventListener('click', () => {
+      resetArticleForm();
+      const today = new Date();
+      const monthsAr = ['جانفي', 'فيفري', 'مارس', 'أفريل', 'ماي', 'جوان', 'جويلية', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      articleDateInput.value = `${today.getDate()} ${monthsAr[today.getMonth()]} ${today.getFullYear()}`;
+      articleFormDrawer.style.display = 'block';
+      articleFormDrawer.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    btnCancelArticle.addEventListener('click', () => {
+      articleFormDrawer.style.display = 'none';
+      resetArticleForm();
+    });
+
+    document.querySelectorAll('#articlePresetsRow .preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.getAttribute('data-url');
+        articleImgUrlInput.value = url;
+        articleImgPreview.src = url;
+        articleImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    articleImgUrlInput.addEventListener('input', () => {
+      const url = articleImgUrlInput.value.trim();
+      if (url) {
+        articleImgPreview.src = url;
+        articleImgPreviewBox.style.display = 'block';
+      } else {
+        articleImgPreviewBox.style.display = 'none';
+      }
+    });
+
+    articleFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      compressImageFile(file, 850, 0.75, (compressedUrl) => {
+        articleImgUrlInput.value = compressedUrl;
+        articleImgPreview.src = compressedUrl;
+        articleImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    btnSaveArticle.addEventListener('click', () => {
+      const title = articleTitleInput.value.trim();
+      const category = articleCatInput.value.trim() || 'إرشادات السفر';
+      const date = articleDateInput.value.trim() || 'حديثاً';
+      const image = articleImgUrlInput.value.trim() || 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80';
+      const excerpt = articleExcerptInput.value.trim();
+      const content = articleContentInput.value.trim();
+      const editId = articleEditId.value;
+
+      if (!title || !excerpt) {
+        alert('يرجى كتابة عنوان المقال والملخص على الأقل.');
+        return;
+      }
+
+      if (editId) {
+        const idx = currentArticles.findIndex(a => a.id === editId);
+        if (idx !== -1) {
+          currentArticles[idx] = {
+            id: editId,
+            title,
+            category,
+            date,
+            image,
+            excerpt,
+            content: content || excerpt
+          };
+        }
+      } else {
+        const newArt = {
+          id: 'art_' + Date.now(),
+          title,
+          category,
+          date,
+          image,
+          excerpt,
+          content: content || excerpt
+        };
+        currentArticles.unshift(newArt);
+      }
+
+      saveAllToLocalStorage();
+      renderAdminArticlesList();
+      articleFormDrawer.style.display = 'none';
+      resetArticleForm();
+      showAlert('✅ تم حفظ المقال بنجاح !');
+    });
+
+    function renderAdminArticlesList() {
+      if (!adminArticlesList) return;
+      adminArticlesList.innerHTML = '';
+
+      if (currentArticles.length === 0) {
+        adminArticlesList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">لا توجد أي مقالات حالياً. انقر على "إضافة مقال جديد" لنشر أول مقال.</div>';
+        return;
+      }
+
+      currentArticles.forEach(art => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'admin-dynamic-item';
+
+        itemEl.innerHTML = `
+          <img src="${escapeHtml(art.image)}" alt="${escapeHtml(art.title)}" class="admin-item-thumb">
+          <div class="admin-item-info">
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap;">
+              ${art.category ? `<span class="admin-item-badge">${escapeHtml(art.category)}</span>` : ''}
+              <span style="font-size: 0.8rem; color: var(--text-muted);">📅 ${escapeHtml(art.date)}</span>
+            </div>
+            <h4 class="admin-item-title">${escapeHtml(art.title)}</h4>
+            <div class="admin-item-desc" style="margin-top: 6px;">${escapeHtml(art.excerpt)}</div>
+          </div>
+          <div class="admin-item-actions">
+            <button type="button" class="btn-action-sm btn-edit-sm btn-edit-article" data-id="${art.id}">
+              <span>✏️ تعديل</span>
+            </button>
+            <button type="button" class="btn-action-sm btn-delete-sm btn-delete-article" data-id="${art.id}">
+              <span>🗑️ حذف</span>
+            </button>
+          </div>
+        `;
+
+        adminArticlesList.appendChild(itemEl);
+      });
+
+      document.querySelectorAll('.btn-edit-article').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const art = currentArticles.find(a => a.id === id);
+          if (!art) return;
+
+          articleEditId.value = art.id;
+          articleTitleInput.value = art.title || '';
+          articleCatInput.value = art.category || '';
+          articleDateInput.value = art.date || '';
+          articleImgUrlInput.value = art.image || '';
+          articleExcerptInput.value = art.excerpt || '';
+          articleContentInput.value = art.content || art.excerpt || '';
+          if (art.image) {
+            articleImgPreview.src = art.image;
+            articleImgPreviewBox.style.display = 'block';
+          }
+          document.getElementById('articleFormTitle').textContent = '✏️ تعديل المقال : ' + art.title;
+          articleFormDrawer.style.display = 'block';
+          articleFormDrawer.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-article').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (confirm('هل أنت متأكد من حذف هذا المقال نهائياً من الموقع؟')) {
+            currentArticles = currentArticles.filter(a => a.id !== id);
+            saveAllToLocalStorage();
+            renderAdminArticlesList();
+            showAlert('🗑️ تم حذف المقال بنجاح');
+          }
+        });
+      });
+    }
+
     // 6. Sauvegarde globale des données
     function saveAllToLocalStorage() {
       let existing = {};
@@ -1527,12 +1827,9 @@
         heroTitleAccent: document.getElementById('cfgHeroTitleAccent').value.trim(),
         heroSubtitle: document.getElementById('cfgHeroSubtitle').value.trim(),
 
-        art1Title: document.getElementById('cfgArt1Title').value.trim(),
-        art2Title: document.getElementById('cfgArt2Title').value.trim(),
-        art3Title: document.getElementById('cfgArt3Title').value.trim(),
-
         packages: currentPackages,
         gallery: currentGallery,
+        articles: currentArticles,
         updatedAt: new Date().toISOString()
       };
 
@@ -1542,7 +1839,7 @@
 
     btnSaveAll.addEventListener('click', () => {
       saveAllToLocalStorage();
-      showAlert('✅ تم حفظ كافة التعديلات والعروض والصور بنجاح !');
+      showAlert('✅ تم حفظ كافة التعديلات والعروض والصور والمقالات بنجاح !');
     });
 
     // 7. Mise à jour mot de passe

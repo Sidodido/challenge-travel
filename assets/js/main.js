@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContextualWhatsApp();
   renderDynamicOffers();
   renderDynamicGallery();
+  renderDynamicArticles();
   initGallery();
   initContactForm();
   initScrollReveal();
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('storage', () => {
   renderDynamicOffers();
   renderDynamicGallery();
+  renderDynamicArticles();
   initHeroQuickBooking();
   applyAdminCustomizations();
 });
@@ -719,37 +721,54 @@ function initArticleModal() {
   const modalCta = modal.querySelector('.modal-cta-btn');
 
   newsCards.forEach(card => {
+    if (card.dataset.modalBound === 'true') return;
+    card.dataset.modalBound = 'true';
+
     // Intercepter le clic sur la carte ou le lien 'Lire l'article'
     const link = card.querySelector('.service-link');
     const openCardArticle = (e) => {
-      e.preventDefault();
+      if (e) e.preventDefault();
 
-      const img = card.querySelector('.news-thumb');
-      const badge = card.querySelector('.news-badge');
-      const date = card.querySelector('.news-date span');
-      const title = card.querySelector('.news-title');
-      const excerpt = card.querySelector('.news-excerpt');
+      const articleId = card.getAttribute('data-article-id');
+      const articles = typeof getStoredArticles === 'function' ? getStoredArticles() : [];
+      const articleData = articles.find(a => a.id === articleId);
 
-      modalImg.src = img ? img.src : '';
-      modalImg.alt = title ? title.textContent : '';
-      modalBadge.textContent = badge ? badge.textContent : 'أخبار';
-      modalDate.textContent = date ? date.textContent : '';
-      modalTitle.textContent = title ? title.textContent : '';
+      const titleText = articleData ? articleData.title : (card.querySelector('.news-title')?.textContent || '');
+      const excerptText = articleData ? articleData.excerpt : (card.querySelector('.news-excerpt')?.textContent || '');
+      const contentText = articleData ? articleData.content : '';
+      const dateText = articleData ? articleData.date : (card.querySelector('.news-date span')?.textContent || '');
+      const badgeText = articleData ? articleData.category : (card.querySelector('.news-badge')?.textContent || 'أخبار');
+      const imgSrc = articleData ? articleData.image : (card.querySelector('.news-thumb')?.src || '');
+
+      modalImg.src = imgSrc;
+      modalImg.alt = titleText;
+      modalBadge.textContent = badgeText;
+      modalDate.textContent = dateText;
+      modalTitle.textContent = titleText;
       
-      const badgeText = badge ? badge.textContent : '';
       let serviceParam = 'omra';
       if (badgeText.includes('تأشيرة') || badgeText.includes('Visa')) serviceParam = 'visa';
-      else if (badgeText.includes('سياحة') || badgeText.includes('سفر')) serviceParam = 'voyage';
+      else if (badgeText.includes('سياحة') || badgeText.includes('سفر') || badgeText.includes('طيران')) serviceParam = 'voyage';
       modalCta.href = `contact.html?service=${serviceParam}`;
 
-      // Contenu détaillé généré pour chaque article
-      modalContent.innerHTML = `
-        <p style="font-weight: 600; color: var(--azure-900); font-size: 1.15rem; margin-bottom: 20px;">
-          ${excerpt ? excerpt.textContent : ''}
-        </p>
-        <p>
-          تحرص وكالة <strong>تشالنج ترافل آند تورز</strong> بالجزائر العاصمة دائماً على تقديم أرقى مستويات الخدمة والمتابعة الشخصية لزبائنها الكرام. من خلال خبرتنا الميدانية الممتدة وتواصلنا الدائم مع شركائنا في المملكة العربية السعودية ومختلف أنحاء العالم، نعمل على تذليل كافة الصعوبات وضمان تجربة سفر مريحة وممتعة.
-        </p>
+      // Contenu détaillé dynamique ou par défaut
+      let bodyHtml = '';
+      if (excerptText) {
+        bodyHtml += `<p style="font-weight: 600; color: var(--azure-900); font-size: 1.15rem; margin-bottom: 20px;">${escapeHtml(excerptText)}</p>`;
+      }
+      if (contentText) {
+        const paragraphs = contentText.split('\n\n').filter(Boolean);
+        paragraphs.forEach(p => {
+          bodyHtml += `<p style="margin-bottom: 16px; line-height: 1.8;">${escapeHtml(p).replace(/\n/g, '<br>')}</p>`;
+        });
+      } else {
+        bodyHtml += `
+          <p>
+            تحرص وكالة <strong>تشالنج ترافل آند تورز</strong> بالجزائر العاصمة دائماً على تقديم أرقى مستويات الخدمة والمتابعة الشخصية لزبائنها الكرام. من خلال خبرتنا الميدانية الممتدة وتواصلنا الدائم مع شركائنا في المملكة العربية السعودية ومختلف أنحاء العالم، نعمل على تذليل كافة الصعوبات وضمان تجربة سفر مريحة وممتعة.
+          </p>
+        `;
+      }
+      bodyHtml += `
         <div style="background: rgba(2, 132, 199, 0.06); border-right: 4px solid var(--azure-600); padding: 18px 24px; border-radius: 8px; margin: 24px 0;">
           <h4 style="margin-bottom: 8px; color: var(--azure-800);">ما يميز خدماتنا بالجزائر العاصمة:</h4>
           <ul style="list-style: disc; padding-right: 20px; line-height: 1.8;">
@@ -762,6 +781,8 @@ function initArticleModal() {
           للمزيد من التوضيحات أو لحجز مكانكم ضمن رحلاتنا القادمة، يسعدنا جداً استقبالكم بمقر الوكالة أو التواصل الفوري عبر الهاتف والواتساب.
         </p>
       `;
+
+      modalContent.innerHTML = bodyHtml;
 
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -1233,6 +1254,105 @@ function renderDynamicGallery() {
 
   initGallery();
 }
+
+function getStoredArticles() {
+  const defaultArticles = [
+    {
+      id: "art_1",
+      title: "دليل المعتمر: خطوات أداء مناسك العمرة خطوة بخطوة بكل يسر وطمأنينة",
+      category: "مناسك العمرة",
+      date: "15 سبتمبر 2026",
+      image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80",
+      excerpt: "تعرّف على أهم النصائح الصحية، تنظيم الحقائب، والإرشادات الشرعية والتنظيمية لضمان أداء مناسك العمرة بكل يسر وطمأنينة.",
+      content: "تتطلب رحلة العمرة استعداداً إيمانياً وبدنياً دقيقاً. نبدأ معكم من نية الإحرام والميقات، ثم الطواف حول الكعبة المشرفة سبعة أشواط مع ذكر الأدعية المستحبة، تليها صلاة ركعتين خلف مقام إبراهيم، ثم السعي بين الصفا والمروة، وختاماً بالحلق أو التقصير.\n\nتحرص وكالة تشالنج ترافل آند تورز بالجزائر العاصمة على توفير مرشدين دينيين ذوي كفاءة عالية يرافقون المعتمرين في كافة المناسك، إلى جانب تقديم الرعاية الطبية والإرشادات التنظيمية لتسهيل تنقلات كبار السن والعائلات بكل راحة وطمأنينة."
+    },
+    {
+      id: "art_2",
+      title: "تأشيرة المملكة العربية السعودية: الوثائق والشروط الرسمية للمواطنين الجزائريين",
+      category: "تأشيرات السعودية",
+      date: "02 سبتمبر 2026",
+      image: "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&w=800&q=80",
+      excerpt: "لتفادي أي تأخير في معالجة طلباتكم، يوضح لكم فريقنا الملف المطلوب بدقة (صلاحية جواز السفر، الصور، الاستمارات) ومراحل متابعة طلبكم حتى الاستلام.",
+      content: "أصبحت إجراءات الحصول على تأشيرة الدخول إلى المملكة العربية السعودية أكثر سلاسة وسرعة عبر المنصات الرسمية الحديثة. تتضمن المتطلبات الأساسية للمواطنين الجزائريين: جواز سفر ساري المفعول لمدة لا تقل عن 6 أشهر، صور شمسية حديثة بخلفية بيضاء، واستيفاء التأمين الطبي الإلزامي المعتمد.\n\nيقوم فريق وكالتنا بالجزائر العاصمة بتدقيق كافة الوثائق ورفعها على النظام الرسمي المعتمد، ومتابعة الملف لحظة بلحظة حتى صدور التأشيرة دون أي عناء من طرف الزبون، مع توفير نصائح خاصة بأنواع التأشيرات المتاحة (سياحية، عمرة، زيارة)."
+    },
+    {
+      id: "art_3",
+      title: "نصائح لحجز تذاكر الطيران بأفضل الأسعار: دليلك لتوفير الوقت والجهد",
+      category: "سياحة وطيران",
+      date: "25 أوت 2026",
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
+      excerpt: "كيف تختار رحلتك الجوية المباشرة وتستفيد من أفضل الأسعار التنافسية؟ نصائح عملية يقدمها لكم مستشارو السياحة في وكالتنا.",
+      content: "يعتبر التخطيط المبكر لحجز رحلات الطيران العامل الأهم في الحصول على أفضل التخفيضات وتجنب الارتفاع المفاجئ في أسعار التذاكر، لا سيما في مواسم الذروة كالعطل المدرسية وشهر رمضان المبارك.\n\nنوصي دائماً باختيار الرحلات المباشرة من مطار الجزائر الدولي (هواري بومدين) نحو جدة أو المدينة المنورة لتفادي إرهاق الترانزيت، والتأكد من أوزان الأمتعة المسموح بها في التذكرة. كما نوفر في وكالة تشالنج ترافل خدمة المقارنة الفورية بين مختلف خطوط الطيران لاختيار التوقيت والأنسب لكم مع ضمان تأكيد المقاعد فوراً."
+    }
+  ];
+
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed.articles) && parsed.articles.length > 0) {
+        return parsed.articles;
+      }
+    }
+  } catch(e) {}
+  return defaultArticles;
+}
+
+function renderDynamicArticles() {
+  const homeGrid = document.getElementById('homeNewsGrid');
+  const mainGrid = document.getElementById('mainNewsGrid');
+  if (!homeGrid && !mainGrid) return;
+
+  const articles = getStoredArticles();
+  if (!articles || !articles.length) return;
+
+  const createArticleCard = (art) => {
+    const card = document.createElement('article');
+    card.className = 'news-card';
+    card.setAttribute('data-article-id', art.id);
+
+    card.innerHTML = `
+      <div class="news-thumb-wrapper">
+        <img src="${escapeHtml(art.image || 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=600&q=80')}" alt="${escapeHtml(art.title)}" class="news-thumb" loading="lazy">
+        ${art.category ? `<span class="news-badge">${escapeHtml(art.category)}</span>` : ''}
+      </div>
+      <div class="news-body">
+        <div class="news-date">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>${escapeHtml(art.date || '')}</span>
+        </div>
+        <h3 class="news-title">${escapeHtml(art.title)}</h3>
+        <p class="news-excerpt">
+          ${escapeHtml(art.excerpt || '')}
+        </p>
+        <a href="#" class="service-link" onclick="event.preventDefault();">
+          <span>اقرأ المقال كاملاً</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform: rotate(180deg);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    `;
+
+    return card;
+  };
+
+  if (homeGrid) {
+    homeGrid.innerHTML = '';
+    const homeArticles = articles.slice(0, 3);
+    homeArticles.forEach(art => {
+      homeGrid.appendChild(createArticleCard(art));
+    });
+  }
+
+  if (mainGrid) {
+    mainGrid.innerHTML = '';
+    articles.forEach(art => {
+      mainGrid.appendChild(createArticleCard(art));
+    });
+  }
+
+  initArticleModal();
+}
+
 
 
 
