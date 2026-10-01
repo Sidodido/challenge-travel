@@ -21,7 +21,7 @@
   <meta property="og:locale" content="ar_DZ">
   
   <!-- CSS Stylesheet with Cache-Buster -->
-  <link rel="stylesheet" href="assets/css/style.css?v=20261001_v3">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261001_v4">
 
   <!-- HERO LUXURY RESERVATION CARD EMBEDDED STYLES (Guaranteed First-Load Styling) -->
   <style id="hero-luxury-card-override">
@@ -772,6 +772,26 @@
     </div>
   </section>
 
+  <!-- SECTION OFFRES & FORFAITS DYNAMIQUES -->
+  <section class="section-py" id="dynamicOffersSection">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <span class="heading-tag">عروض وبرامج حصرية</span>
+          <h2 class="section-title">باقات العمرة والرحلات المختارة</h2>
+          <p class="section-desc">عروض متميزة ومتنوعة تناسب جميع الميزانيات، مع إمكانية التخصيص والمرافقة الدائمة.</p>
+        </div>
+        <a href="https://wa.me/213773496112?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%B7%D9%84%D8%A8%20%D8%B9%D8%B1%D8%B6%20%D8%B3%D8%B9%D8%B1%20%D9%85%D8%AE%D8%B5%D8%B5" target="_blank" rel="noopener" class="btn btn-outline">
+          <span>طلب عرض مخصص</span>
+        </a>
+      </div>
+
+      <div class="dynamic-offers-grid" id="dynamicOffersGrid">
+        <!-- Rendu dynamique en JS via localStorage -->
+      </div>
+    </div>
+  </section>
+
   <!-- SECTION VISA ARABIE SAOUDITE -->
   <section class="section-py" id="visaHighlight">
     <div class="container">
@@ -859,7 +879,7 @@
         <a href="galerie.html" class="btn btn-outline">مشاهدة المعرض كاملاً</a>
       </div>
 
-      <div class="gallery-grid">
+      <div class="gallery-grid" id="homeGalleryGrid">
         <div class="gallery-item span-2" data-cat="omra">
           <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80" alt="مكة المكرمة - المسجد الحرام">
           <div class="gallery-overlay">
@@ -1078,7 +1098,7 @@
     </a>
   </div>
 
-  <!-- SCRIPT JS -->
-  <script src="assets/js/main.js"></script>
+  <!-- SCRIPT JS with Cache-Buster -->
+  <script src="assets/js/main.js?v=20261001_v4"></script>
 </body>
 </html>

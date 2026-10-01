@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initLanguageSwitcher();
   initContextualWhatsApp();
+  renderDynamicOffers();
+  renderDynamicGallery();
   initGallery();
   initContactForm();
   initScrollReveal();
@@ -18,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('storage', () => {
+  renderDynamicOffers();
+  renderDynamicGallery();
+  initHeroQuickBooking();
   applyAdminCustomizations();
 });
 
@@ -796,15 +801,23 @@ function initHeroQuickBooking() {
     return null;
   };
 
-  const adminData = getAdminPrices();
+  const storedPkgs = getStoredPackages();
+  const omraOptions = (storedPkgs && storedPkgs.length > 0)
+    ? storedPkgs.map(p => ({
+        text: `${p.title} (${p.price})`,
+        val: p.title,
+        price: p.price,
+        tag: p.tag || 'باقة عمرة مميزة'
+      }))
+    : [
+        { text: `${adminData && adminData.pkg1Title ? adminData.pkg1Title : 'عمرة شهر رمضان المبارك'} (${adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج'})`, val: 'عمرة شهر رمضان المبارك', price: adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج', tag: 'باقة رمضان الروحانية 2026' },
+        { text: `${adminData && adminData.pkg2Title ? adminData.pkg2Title : 'عمرة رجب وشعبان'} (${adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج'})`, val: 'عمرة رجب وشعبان', price: adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج', tag: 'موسم رجب وشعبان المبارك' },
+        { text: 'عمرة اقتصادية مباشرة ومريحة (ابتداءً من 170,000 دج)', val: 'عمرة اقتصادية مباشرة', price: 'ابتداءً من 170,000 دج', tag: 'الخيار الاقتصادي الأوفر' },
+        { text: `${adminData && adminData.pkg3Title ? adminData.pkg3Title : 'عمرة VIP فنادق 5 نجوم'} (${adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج'})`, val: 'عمرة VIP 5 نجوم', price: adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج', tag: 'إقامة فاخرة مطلة على الحرم' }
+      ];
 
   const packageData = {
-    omra: [
-      { text: `${adminData && adminData.pkg1Title ? adminData.pkg1Title : 'عمرة شهر رمضان المبارك'} (${adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج'})`, val: 'عمرة شهر رمضان المبارك', price: adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج', tag: 'باقة رمضان الروحانية 2026' },
-      { text: `${adminData && adminData.pkg2Title ? adminData.pkg2Title : 'عمرة رجب وشعبان'} (${adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج'})`, val: 'عمرة رجب وشعبان', price: adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج', tag: 'موسم رجب وشعبان المبارك' },
-      { text: 'عمرة اقتصادية مباشرة ومريحة (ابتداءً من 170,000 دج)', val: 'عمرة اقتصادية مباشرة', price: 'ابتداءً من 170,000 دج', tag: 'الخيار الاقتصادي الأوفر' },
-      { text: `${adminData && adminData.pkg3Title ? adminData.pkg3Title : 'عمرة VIP فنادق 5 نجوم'} (${adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج'})`, val: 'عمرة VIP 5 نجوم', price: adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج', tag: 'إقامة فاخرة مطلة على الحرم' }
-    ],
+    omra: omraOptions,
     visa: [
       { text: 'تأشيرة سياحية إلكترونية (E-Visa)', val: 'تأشيرة سياحية إلكترونية', price: 'معالجة فورية ومطابقة', tag: 'تأشيرة إلكترونية سريعة' },
       { text: 'تأشيرة زيارة عائلية وشخصية', val: 'تأشيرة زيارة عائلية/شخصية', price: 'تدقيق شامل للوثائق', tag: 'زيارات الأقارب والعائلات' },
@@ -1034,6 +1047,191 @@ function applyAdminCustomizations() {
   } catch (err) {
     console.error('Error applying admin customizations:', err);
   }
+}
+
+/* ==========================================================================
+   12. GESTION DES FORFAITS ET DE LA GALERIE DYNAMIQUES
+   ========================================================================== */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function getStoredPackages() {
+  const defaultPkgs = [
+    {
+      id: "pkg_1",
+      title: "عمرة شهر رمضان المبارك 2026",
+      price: "ابتداءً من 235,000 دج",
+      tag: "موسم رمضان المبارك",
+      image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80",
+      details: "فنادق مختارة ومريحة قريبة من ساحات الحرم\nرحلات طيران مباشرة ومواعيد مؤكدة\nتأشيرة إلكترونية وتأمين صحي شامل\nمرافقة وتأطير ديني على مدار الساعة"
+    },
+    {
+      id: "pkg_2",
+      title: "عمرة رجب وشعبان (المولد والمناسبات)",
+      price: "ابتداءً من 185,000 دج",
+      tag: "موسم رجب وشعبان المبارك",
+      image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80",
+      details: "إقامة متميزة بالمسجد النبوي والمسجد الحرام\nتنقلات مريحة بحافلات حديثة ومكيفة\nمزارات إسلامية تاريخية بمكة والمدينة\nمرشد معتمد طيلة أيام الرحلة"
+    },
+    {
+      id: "pkg_3",
+      title: "عمرة VIP فنادق 5 نجوم مطلة على الحرم",
+      price: "ابتداءً من 320,000 دج",
+      tag: "إقامة فاخرة مطلة على الحرم",
+      image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80",
+      details: "أجنحة وفنادق 5 نجوم بإطلالة مباشرة على الكعبة\nبوفيه إفطار وعشاء فاخر وخدمات غرف راقية\nتنقلات خاصة بسيارات حديثة VIP\nتسهيلات ومتابعة شخصية من المطار إلى المطار"
+    }
+  ];
+
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed.packages) && parsed.packages.length > 0) {
+        return parsed.packages;
+      }
+    }
+  } catch(e) {}
+  return defaultPkgs;
+}
+
+function getStoredGallery() {
+  const defaultGal = [
+    {
+      id: "gal_1",
+      title: "الكعبة المشرفة وجموع الطائفين بخشوع",
+      category: "omra",
+      categoryLabel: "العمرة",
+      span: "span-2",
+      image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      id: "gal_2",
+      title: "المسجد النبوي الشريف وقبابه الخضراء",
+      category: "omra",
+      categoryLabel: "المدينة المنورة",
+      span: "normal",
+      image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      id: "gal_3",
+      title: "رحلات جوية مباشرة ومريحة",
+      category: "voyages",
+      categoryLabel: "الرحلات",
+      span: "normal",
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      id: "gal_4",
+      title: "لحظات خشوع وسكينة في رحاب الحرم",
+      category: "omra",
+      categoryLabel: "العمرة",
+      span: "span-2",
+      image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1200&q=80"
+    }
+  ];
+
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed.gallery) && parsed.gallery.length > 0) {
+        return parsed.gallery;
+      }
+    }
+  } catch(e) {}
+  return defaultGal;
+}
+
+function renderDynamicOffers() {
+  const container = document.getElementById('dynamicOffersGrid');
+  if (!container) return;
+
+  const packages = getStoredPackages();
+  if (!packages || !packages.length) return;
+
+  let waPhone = getAdminWhatsApp();
+
+  container.innerHTML = '';
+
+  packages.forEach(pkg => {
+    const card = document.createElement('article');
+    card.className = 'dynamic-offer-card';
+
+    let detailsList = [];
+    if (typeof pkg.details === 'string') {
+      detailsList = pkg.details.split('\n').map(s => s.trim()).filter(Boolean);
+    } else if (Array.isArray(pkg.details)) {
+      detailsList = pkg.details;
+    }
+
+    const featuresHtml = detailsList.map(item => `
+      <li class="offer-feature-item">
+        <span class="offer-feature-icon">✓</span>
+        <span>${escapeHtml(item)}</span>
+      </li>
+    `).join('');
+
+    const waMsg = `السلام عليكم، أرغب في الاستفسار عن وحجز: ${pkg.title} (${pkg.price})`;
+    const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(waMsg)}`;
+
+    card.innerHTML = `
+      <div class="offer-card-media">
+        <img src="${escapeHtml(pkg.image || 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80')}" alt="${escapeHtml(pkg.title)}" class="offer-card-img" loading="lazy">
+        ${pkg.tag ? `<span class="offer-card-badge">${escapeHtml(pkg.tag)}</span>` : ''}
+        <span class="offer-card-price-overlay">${escapeHtml(pkg.price)}</span>
+      </div>
+      <div class="offer-card-body">
+        <h3 class="offer-card-title">${escapeHtml(pkg.title)}</h3>
+        <ul class="offer-features-list">
+          ${featuresHtml}
+        </ul>
+        <a href="${waUrl}" target="_blank" rel="noopener" class="offer-card-btn">
+          <span>احجز الآن عبر واتساب</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.107.005.249-.041.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
+        </a>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function renderDynamicGallery() {
+  const containers = [document.getElementById('homeGalleryGrid'), document.getElementById('mainGalleryGrid')].filter(Boolean);
+  if (!containers.length) return;
+
+  const galleryItems = getStoredGallery();
+  if (!galleryItems || !galleryItems.length) return;
+
+  containers.forEach(container => {
+    container.innerHTML = '';
+
+    galleryItems.forEach(item => {
+      const el = document.createElement('div');
+      el.className = `gallery-item ${item.span === 'span-2' ? 'span-2' : ''}`;
+      el.setAttribute('data-cat', item.category || 'omra');
+
+      el.innerHTML = `
+        <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">
+        <div class="gallery-overlay">
+          <span class="gallery-caption-cat">${escapeHtml(item.categoryLabel || 'العمرة')}</span>
+          <h4 class="gallery-caption-title">${escapeHtml(item.title)}</h4>
+        </div>
+      `;
+
+      container.appendChild(el);
+    });
+  });
+
+  initGallery();
 }
 
 

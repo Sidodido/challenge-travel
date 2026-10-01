@@ -371,6 +371,149 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
+    /* Styles pour la gestion dynamique des offres et de la galerie */
+    .presets-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .preset-btn:hover {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--gold-400);
+      color: var(--gold-300);
+    }
+
+    .admin-dynamic-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      transition: all 0.25s ease;
+    }
+
+    .admin-dynamic-item:hover {
+      border-color: rgba(212, 175, 55, 0.45);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-item-thumb {
+      width: 120px;
+      height: 85px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #0B1B2B;
+    }
+
+    .admin-item-info {
+      flex: 1;
+      text-align: right;
+    }
+
+    .admin-item-badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: var(--gold-300);
+      font-size: 0.78rem;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .admin-item-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .admin-item-sub {
+      font-size: 0.85rem;
+      color: var(--gold-400);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .admin-item-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .admin-item-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-action-sm {
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-edit-sm {
+      background: rgba(212, 175, 55, 0.18);
+      color: var(--gold-400);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-edit-sm:hover {
+      background: var(--gold-500);
+      color: #071E33;
+    }
+
+    .btn-delete-sm {
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-delete-sm:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+
+    .admin-drawer {
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 900px) {
       .admin-layout {
         grid-template-columns: 1fr;
@@ -460,7 +603,10 @@
           <span>🕌</span> الواجهة الرئيسية (الهيرو)
         </button>
         <button type="button" class="sidebar-btn" data-tab="tabPackages">
-          <span>🕋</span> باقات وأسعار العمرة
+          <span>🕋</span> عروض وباقات الأسفار
+        </button>
+        <button type="button" class="sidebar-btn" data-tab="tabGallery">
+          <span>🖼️</span> معرض الصور (Galerie)
         </button>
         <button type="button" class="sidebar-btn" data-tab="tabArticles">
           <span>📰</span> الأخبار والمقالات
@@ -547,52 +693,180 @@
           </div>
         </section>
 
-        <!-- TAB 3 : FORFAITS OMRA -->
+        <!-- TAB 3 : OFFRES ET FORFAITS DYNAMIQUES -->
         <section id="tabPackages" class="tab-content" style="display: none;">
           <div class="admin-card">
-            <h2 class="admin-card-title">🕋 باقات وبرامج العمرة</h2>
-            <p class="admin-card-desc">إدارة عروض العمرة الحالية وأسعارها المعروضة في الصفحة الرئيسية.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h2 class="admin-card-title">🕋 إدارة عروض وباقات العمرة والرحلات</h2>
+                <p class="admin-card-desc" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+                  إضافة عروض جديدة بالصور والتفاصيل والأسعار، أو تعديل وحذف العروض الحالية لتنعكس فوراً على الموقع.
+                </p>
+              </div>
+              <button type="button" id="btnOpenNewOffer" class="btn-gold" style="width: auto; padding: 10px 22px;">
+                <span>➕ إضافة عرض جديد</span>
+              </button>
+            </div>
 
-            <div class="admin-card" style="background: rgba(255,255,255,0.03); margin-bottom: 16px;">
-              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الأولى : عمرة شهر رمضان المبارك</h3>
+            <!-- Formulaire Ajout / Édition d'Offre (Repliable) -->
+            <div id="offerFormDrawer" class="admin-drawer" style="display: none; background: rgba(255,255,255,0.04); border: 1.5px solid var(--gold-500); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+              <h3 id="offerFormTitle" style="color: var(--gold-400); font-size: 1.2rem; margin-bottom: 18px;">➕ إضافة عرض جديد</h3>
+              <input type="hidden" id="offerEditId" value="">
+
               <div class="grid-2">
                 <div class="form-group">
-                  <label class="form-label">عنوان الباقة</label>
-                  <input type="text" id="cfgPkg1Title" class="form-input" value="عمرة شهر رمضان المبارك">
+                  <label class="form-label">عنوان العرض / الباقة *</label>
+                  <input type="text" id="offerTitleInput" class="form-input" placeholder="مثال: عمرة رمضان 2026 - باقة الوفاق">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
-                  <input type="text" id="cfgPkg1Price" class="form-input" value="235,000 دج">
+                  <label class="form-label">السعر الاستدلالي (بالدينار الجزائري) *</label>
+                  <input type="text" id="offerPriceInput" class="form-input" placeholder="مثال: ابتداءً من 235,000 دج">
                 </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">الشارة الترويجية (Badge) *</label>
+                  <input type="text" id="offerTagInput" class="form-input" placeholder="مثال: باقة VIP فاخرة أو باقة اقتصادية">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رابط صورة العرض (URL) أو رفع من جهازك</label>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" id="offerImgUrlInput" class="form-input" placeholder="https://images.unsplash.com/..." dir="ltr">
+                    <label class="btn-secondary" style="white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center;">
+                      <span>📁 رفع صورة</span>
+                      <input type="file" id="offerFileInput" accept="image/*" style="display: none;">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Préréglages d'images d'ambiance -->
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.82rem; color: var(--gold-400);">📸 أو اختر صورة نموذجية سريعة :</label>
+                <div class="presets-row" id="offerPresetsRow">
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80">🕋 مكة المكرمة</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80">🕌 المسجد النبوي</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80">✨ أبراج الحرم</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80">✈️ طيران فاخر</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80">🌴 سياحة وسفر</button>
+                </div>
+              </div>
+
+              <!-- Prévisualisation de l'image -->
+              <div id="offerImgPreviewBox" style="margin-bottom: 16px; display: none;">
+                <label class="form-label" style="font-size: 0.82rem;">معاينة الصورة المختارة :</label>
+                <img id="offerImgPreview" src="" alt="معاينة" style="height: 120px; width: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-subtle);">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">تفاصيل ومميزات الباقة (أدخل كل ميزة في سطر منفصل) *</label>
+                <textarea id="offerDetailsInput" class="form-textarea" rows="4" placeholder="فنادق 5 نجوم قريبة من ساحات الحرم&#10;طيران مباشر مريح مع الخطوط الجوية&#10;تأشيرة وتأمين سفر شامل&#10;مرافقة وتأطير ديني متواصل"></textarea>
+              </div>
+
+              <div style="display: flex; gap: 12px;">
+                <button type="button" id="btnSaveOffer" class="btn-gold" style="width: auto; padding: 10px 28px;">
+                  <span>💾 حفظ العرض في الموقع</span>
+                </button>
+                <button type="button" id="btnCancelOffer" class="btn-secondary">
+                  <span>إلغاء</span>
+                </button>
               </div>
             </div>
 
-            <div class="admin-card" style="background: rgba(255,255,255,0.03); margin-bottom: 16px;">
-              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الثانية : عمرة رجب وشعبان</h3>
+            <!-- Liste des Offres Actuelles -->
+            <div id="adminOffersList" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Rendu dynamique JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4 : GALERIE PHOTOS DYNAMIQUE -->
+        <section id="tabGallery" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h2 class="admin-card-title">🖼️ إدارة معرض الصور</h2>
+                <p class="admin-card-desc" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+                  إضافة صور جديدة إلى معرض الموقع، تخصيص عناوينها وتصنيفاتها، أو حذف الصور الحالية.
+                </p>
+              </div>
+              <button type="button" id="btnOpenNewGal" class="btn-gold" style="width: auto; padding: 10px 22px;">
+                <span>➕ إضافة صورة للمعرض</span>
+              </button>
+            </div>
+
+            <!-- Formulaire Ajout / Édition Image Galerie (Repliable) -->
+            <div id="galFormDrawer" class="admin-drawer" style="display: none; background: rgba(255,255,255,0.04); border: 1.5px solid var(--gold-500); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+              <h3 id="galFormTitle" style="color: var(--gold-400); font-size: 1.2rem; margin-bottom: 18px;">➕ إضافة صورة جديدة للمعرض</h3>
+              <input type="hidden" id="galEditId" value="">
+
               <div class="grid-2">
                 <div class="form-group">
-                  <label class="form-label">عنوان الباقة</label>
-                  <input type="text" id="cfgPkg2Title" class="form-input" value="عمرة رجب وشعبان (المولد والمناسبات)">
+                  <label class="form-label">عنوان / وصف الصورة *</label>
+                  <input type="text" id="galTitleInput" class="form-input" placeholder="مثال: الكعبة المشرفة وجموع المعتمرين">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
-                  <input type="text" id="cfgPkg2Price" class="form-input" value="185,000 دج">
+                  <label class="form-label">تصنيف الصورة *</label>
+                  <select id="galCategoryInput" class="form-select">
+                    <option value="omra">العمرة وزيارة الحرمين</option>
+                    <option value="voyages">الرحلات السياحية</option>
+                    <option value="agence">مقر الوكالة بالجزائر</option>
+                    <option value="evenements">التوديع والفعاليات</option>
+                  </select>
                 </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label">تنسيق العرض في الشبكة</label>
+                  <select id="galSpanInput" class="form-select">
+                    <option value="normal">حجم قياسي (1 عمود)</option>
+                    <option value="span-2">حجم عريض بانورامي (2 أعمدة)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رابط الصورة (URL) أو رفع من جهازك *</label>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" id="galImgUrlInput" class="form-input" placeholder="https://images.unsplash.com/..." dir="ltr">
+                    <label class="btn-secondary" style="white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center;">
+                      <span>📁 رفع صورة</span>
+                      <input type="file" id="galFileInput" accept="image/*" style="display: none;">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Préréglages rapides -->
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.82rem; color: var(--gold-400);">📸 أو اختر صورة جاهزة :</label>
+                <div class="presets-row" id="galPresetsRow">
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80">🕋 مكة المكرمة</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80">🕌 المسجد النبوي</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80">✈️ طيران</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80">🏢 مقر الوكالة</button>
+                  <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80">👥 وفد وتوديع</button>
+                </div>
+              </div>
+
+              <div id="galImgPreviewBox" style="margin-bottom: 16px; display: none;">
+                <label class="form-label" style="font-size: 0.82rem;">معاينة الصورة :</label>
+                <img id="galImgPreview" src="" alt="معاينة" style="height: 120px; width: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-subtle);">
+              </div>
+
+              <div style="display: flex; gap: 12px;">
+                <button type="button" id="btnSaveGal" class="btn-gold" style="width: auto; padding: 10px 28px;">
+                  <span>💾 إضافة الصورة للمعرض</span>
+                </button>
+                <button type="button" id="btnCancelGal" class="btn-secondary">
+                  <span>إلغاء</span>
+                </button>
               </div>
             </div>
 
-            <div class="admin-card" style="background: rgba(255,255,255,0.03);">
-              <h3 style="font-size: 1.1rem; color: var(--gold-400); margin-bottom: 12px;">الباقة الثالثة : عمرة VIP 5 نجوم</h3>
-              <div class="grid-2">
-                <div class="form-group">
-                  <label class="form-label">عنوان الباقة</label>
-                  <input type="text" id="cfgPkg3Title" class="form-input" value="عمرة VIP فنادق 5 نجوم مطلة على الحرم">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">السعر الاستدلالي (ابتداءً من)</label>
-                  <input type="text" id="cfgPkg3Price" class="form-input" value="320,000 دج">
-                </div>
-              </div>
+            <!-- Grille des photos actuelles -->
+            <div id="adminGalleryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;">
+              <!-- Rendu dynamique JS -->
             </div>
           </div>
         </section>
@@ -726,44 +1000,520 @@
       });
     });
 
+    // Données par défaut des Forfaits et de la Galerie
+    const DEFAULT_PACKAGES = [
+      {
+        id: "pkg_1",
+        title: "عمرة شهر رمضان المبارك 2026",
+        price: "ابتداءً من 235,000 دج",
+        tag: "موسم رمضان المبارك",
+        image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80",
+        details: "فنادق مختارة ومريحة قريبة من ساحات الحرم\nرحلات طيران مباشرة ومواعيد مؤكدة\nتأشيرة إلكترونية وتأمين صحي شامل\nمرافقة وتأطير ديني على مدار الساعة"
+      },
+      {
+        id: "pkg_2",
+        title: "عمرة رجب وشعبان (المولد والمناسبات)",
+        price: "ابتداءً من 185,000 دج",
+        tag: "موسم رجب وشعبان المبارك",
+        image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80",
+        details: "إقامة متميزة بالمسجد النبوي والمسجد الحرام\nتنقلات مريحة بحافلات حديثة ومكيفة\nمزارات إسلامية تاريخية بمكة والمدينة\nمرشد معتمد طيلة أيام الرحلة"
+      },
+      {
+        id: "pkg_3",
+        title: "عمرة VIP فنادق 5 نجوم مطلة على الحرم",
+        price: "ابتداءً من 320,000 دج",
+        tag: "إقامة فاخرة مطلة على الحرم",
+        image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80",
+        details: "أجنحة وفنادق 5 نجوم بإطلالة مباشرة على الكعبة\nبوفيه إفطار وعشاء فاخر وخدمات غرف راقية\nتنقلات خاصة بسيارات حديثة VIP\nتسهيلات ومتابعة شخصية من المطار إلى المطار"
+      }
+    ];
+
+    const DEFAULT_GALLERY = [
+      {
+        id: "gal_1",
+        title: "الكعبة المشرفة وجموع الطائفين بخشوع",
+        category: "omra",
+        categoryLabel: "العمرة",
+        span: "span-2",
+        image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        id: "gal_2",
+        title: "المسجد النبوي الشريف وقبابه الخضراء",
+        category: "omra",
+        categoryLabel: "المدينة المنورة",
+        span: "normal",
+        image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "gal_3",
+        title: "رحلات جوية مباشرة ومريحة",
+        category: "voyages",
+        categoryLabel: "الرحلات",
+        span: "normal",
+        image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "gal_4",
+        title: "لحظات خشوع وسكينة في رحاب الحرم",
+        category: "omra",
+        categoryLabel: "العمرة",
+        span: "span-2",
+        image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1200&q=80"
+      }
+    ];
+
+    let currentPackages = [];
+    let currentGallery = [];
+
+    // Helper compression d'image côté client (Canvas)
+    function compressImageFile(file, maxWidth, quality, callback) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressed = canvas.toDataURL('image/jpeg', quality);
+          callback(compressed);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     // 5. Chargement des données stockées
     function loadAdminData() {
       const saved = localStorage.getItem('challenge_travel_content');
-      if (!saved) return;
-
-      try {
-        const data = JSON.parse(saved);
-        if (data.phone1) document.getElementById('cfgPhone1').value = data.phone1;
-        if (data.phone2) document.getElementById('cfgPhone2').value = data.phone2;
-        if (data.phoneFix) document.getElementById('cfgPhoneFix').value = data.phoneFix;
-        if (data.whatsapp) document.getElementById('cfgWhatsApp').value = data.whatsapp;
-        if (data.email) document.getElementById('cfgEmail').value = data.email;
-        if (data.formEmail) document.getElementById('cfgFormEmail').value = data.formEmail;
-        if (data.address) document.getElementById('cfgAddress').value = data.address;
-
-        if (data.heroBadge) document.getElementById('cfgHeroBadge').value = data.heroBadge;
-        if (data.heroTitle1) document.getElementById('cfgHeroTitle1').value = data.heroTitle1;
-        if (data.heroTitleAccent) document.getElementById('cfgHeroTitleAccent').value = data.heroTitleAccent;
-        if (data.heroSubtitle) document.getElementById('cfgHeroSubtitle').value = data.heroSubtitle;
-
-        if (data.pkg1Title) document.getElementById('cfgPkg1Title').value = data.pkg1Title;
-        if (data.pkg1Price) document.getElementById('cfgPkg1Price').value = data.pkg1Price;
-        if (data.pkg2Title) document.getElementById('cfgPkg2Title').value = data.pkg2Title;
-        if (data.pkg2Price) document.getElementById('cfgPkg2Price').value = data.pkg2Price;
-        if (data.pkg3Title) document.getElementById('cfgPkg3Title').value = data.pkg3Title;
-        if (data.pkg3Price) document.getElementById('cfgPkg3Price').value = data.pkg3Price;
-
-        if (data.art1Title) document.getElementById('cfgArt1Title').value = data.art1Title;
-        if (data.art2Title) document.getElementById('cfgArt2Title').value = data.art2Title;
-        if (data.art3Title) document.getElementById('cfgArt3Title').value = data.art3Title;
-      } catch (e) {
-        console.error('Error loading config:', e);
+      let data = {};
+      if (saved) {
+        try {
+          data = JSON.parse(saved);
+        } catch(e) {}
       }
+
+      if (data.phone1) document.getElementById('cfgPhone1').value = data.phone1;
+      if (data.phone2) document.getElementById('cfgPhone2').value = data.phone2;
+      if (data.phoneFix) document.getElementById('cfgPhoneFix').value = data.phoneFix;
+      if (data.whatsapp) document.getElementById('cfgWhatsApp').value = data.whatsapp;
+      if (data.email) document.getElementById('cfgEmail').value = data.email;
+      if (data.formEmail) document.getElementById('cfgFormEmail').value = data.formEmail;
+      if (data.address) document.getElementById('cfgAddress').value = data.address;
+
+      if (data.heroBadge) document.getElementById('cfgHeroBadge').value = data.heroBadge;
+      if (data.heroTitle1) document.getElementById('cfgHeroTitle1').value = data.heroTitle1;
+      if (data.heroTitleAccent) document.getElementById('cfgHeroTitleAccent').value = data.heroTitleAccent;
+      if (data.heroSubtitle) document.getElementById('cfgHeroSubtitle').value = data.heroSubtitle;
+
+      if (data.art1Title) document.getElementById('cfgArt1Title').value = data.art1Title;
+      if (data.art2Title) document.getElementById('cfgArt2Title').value = data.art2Title;
+      if (data.art3Title) document.getElementById('cfgArt3Title').value = data.art3Title;
+
+      // Charger les forfaits
+      if (Array.isArray(data.packages) && data.packages.length > 0) {
+        currentPackages = data.packages;
+      } else {
+        currentPackages = JSON.parse(JSON.stringify(DEFAULT_PACKAGES));
+      }
+      renderAdminOffersList();
+
+      // Charger la galerie
+      if (Array.isArray(data.gallery) && data.gallery.length > 0) {
+        currentGallery = data.gallery;
+      } else {
+        currentGallery = JSON.parse(JSON.stringify(DEFAULT_GALLERY));
+      }
+      renderAdminGalleryList();
     }
 
-    // 6. Sauvegarde des données
-    btnSaveAll.addEventListener('click', () => {
+    // =========================================================================
+    // GESTIONNAIRE DES OFFRES / PACKAGES
+    // =========================================================================
+    const btnOpenNewOffer = document.getElementById('btnOpenNewOffer');
+    const offerFormDrawer = document.getElementById('offerFormDrawer');
+    const btnCancelOffer = document.getElementById('btnCancelOffer');
+    const btnSaveOffer = document.getElementById('btnSaveOffer');
+    const offerEditId = document.getElementById('offerEditId');
+    const offerTitleInput = document.getElementById('offerTitleInput');
+    const offerPriceInput = document.getElementById('offerPriceInput');
+    const offerTagInput = document.getElementById('offerTagInput');
+    const offerImgUrlInput = document.getElementById('offerImgUrlInput');
+    const offerFileInput = document.getElementById('offerFileInput');
+    const offerDetailsInput = document.getElementById('offerDetailsInput');
+    const offerImgPreviewBox = document.getElementById('offerImgPreviewBox');
+    const offerImgPreview = document.getElementById('offerImgPreview');
+    const adminOffersList = document.getElementById('adminOffersList');
+
+    function resetOfferForm() {
+      offerEditId.value = '';
+      offerTitleInput.value = '';
+      offerPriceInput.value = '';
+      offerTagInput.value = '';
+      offerImgUrlInput.value = '';
+      offerDetailsInput.value = '';
+      offerFileInput.value = '';
+      offerImgPreview.src = '';
+      offerImgPreviewBox.style.display = 'none';
+      document.getElementById('offerFormTitle').textContent = '➕ إضافة عرض جديد';
+    }
+
+    btnOpenNewOffer.addEventListener('click', () => {
+      resetOfferForm();
+      offerFormDrawer.style.display = 'block';
+      offerFormDrawer.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    btnCancelOffer.addEventListener('click', () => {
+      offerFormDrawer.style.display = 'none';
+      resetOfferForm();
+    });
+
+    // Préréglages d'images d'offres
+    document.querySelectorAll('#offerPresetsRow .preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.getAttribute('data-url');
+        offerImgUrlInput.value = url;
+        offerImgPreview.src = url;
+        offerImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    offerImgUrlInput.addEventListener('input', () => {
+      const url = offerImgUrlInput.value.trim();
+      if (url) {
+        offerImgPreview.src = url;
+        offerImgPreviewBox.style.display = 'block';
+      } else {
+        offerImgPreviewBox.style.display = 'none';
+      }
+    });
+
+    offerFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      compressImageFile(file, 850, 0.75, (compressedUrl) => {
+        offerImgUrlInput.value = compressedUrl;
+        offerImgPreview.src = compressedUrl;
+        offerImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    btnSaveOffer.addEventListener('click', () => {
+      const title = offerTitleInput.value.trim();
+      const price = offerPriceInput.value.trim();
+      const tag = offerTagInput.value.trim();
+      const image = offerImgUrlInput.value.trim() || 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80';
+      const details = offerDetailsInput.value.trim();
+      const editId = offerEditId.value;
+
+      if (!title || !price) {
+        alert('يرجى ملء عنوان الباقة والسعر على الأقل.');
+        return;
+      }
+
+      if (editId) {
+        // Modification
+        const idx = currentPackages.findIndex(p => p.id === editId);
+        if (idx !== -1) {
+          currentPackages[idx] = {
+            id: editId,
+            title,
+            price,
+            tag,
+            image,
+            details
+          };
+        }
+      } else {
+        // Nouveau
+        const newPkg = {
+          id: 'pkg_' + Date.now(),
+          title,
+          price,
+          tag,
+          image,
+          details
+        };
+        currentPackages.push(newPkg);
+      }
+
+      saveAllToLocalStorage();
+      renderAdminOffersList();
+      offerFormDrawer.style.display = 'none';
+      resetOfferForm();
+      showAlert('✅ تم حفظ باقة العمرة بنجاح !');
+    });
+
+    function renderAdminOffersList() {
+      if (!adminOffersList) return;
+      adminOffersList.innerHTML = '';
+
+      if (currentPackages.length === 0) {
+        adminOffersList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">لا توجد أي باقات حالياً. انقر على "إضافة عرض جديد" لإضافة أول باقة.</div>';
+        return;
+      }
+
+      currentPackages.forEach(pkg => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'admin-dynamic-item';
+
+        const detailsCount = (pkg.details || '').split('\n').filter(Boolean).length;
+
+        itemEl.innerHTML = `
+          <img src="${escapeHtml(pkg.image)}" alt="${escapeHtml(pkg.title)}" class="admin-item-thumb">
+          <div class="admin-item-info">
+            ${pkg.tag ? `<span class="admin-item-badge">${escapeHtml(pkg.tag)}</span>` : ''}
+            <h4 class="admin-item-title">${escapeHtml(pkg.title)}</h4>
+            <div class="admin-item-sub">💰 ${escapeHtml(pkg.price)}</div>
+            <div class="admin-item-desc">📋 يحتوي على ${detailsCount} ميزات ومواصفات مفصلة</div>
+          </div>
+          <div class="admin-item-actions">
+            <button type="button" class="btn-action-sm btn-edit-sm btn-edit-offer" data-id="${pkg.id}">
+              <span>✏️ تعديل</span>
+            </button>
+            <button type="button" class="btn-action-sm btn-delete-sm btn-delete-offer" data-id="${pkg.id}">
+              <span>🗑️ حذف</span>
+            </button>
+          </div>
+        `;
+
+        adminOffersList.appendChild(itemEl);
+      });
+
+      // Actions تعديل & حذف
+      document.querySelectorAll('.btn-edit-offer').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const pkg = currentPackages.find(p => p.id === id);
+          if (!pkg) return;
+
+          offerEditId.value = pkg.id;
+          offerTitleInput.value = pkg.title || '';
+          offerPriceInput.value = pkg.price || '';
+          offerTagInput.value = pkg.tag || '';
+          offerImgUrlInput.value = pkg.image || '';
+          offerDetailsInput.value = pkg.details || '';
+          if (pkg.image) {
+            offerImgPreview.src = pkg.image;
+            offerImgPreviewBox.style.display = 'block';
+          }
+          document.getElementById('offerFormTitle').textContent = '✏️ تعديل العرض : ' + pkg.title;
+          offerFormDrawer.style.display = 'block';
+          offerFormDrawer.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-offer').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (confirm('هل أنت متأكد من حذف هذه الباقة؟')) {
+            currentPackages = currentPackages.filter(p => p.id !== id);
+            saveAllToLocalStorage();
+            renderAdminOffersList();
+            showAlert('🗑️ تم حذف الباقة بنجاح');
+          }
+        });
+      });
+    }
+
+    // =========================================================================
+    // GESTIONNAIRE DE LA GALERIE PHOTOS
+    // =========================================================================
+    const btnOpenNewGal = document.getElementById('btnOpenNewGal');
+    const galFormDrawer = document.getElementById('galFormDrawer');
+    const btnCancelGal = document.getElementById('btnCancelGal');
+    const btnSaveGal = document.getElementById('btnSaveGal');
+    const galEditId = document.getElementById('galEditId');
+    const galTitleInput = document.getElementById('galTitleInput');
+    const galCategoryInput = document.getElementById('galCategoryInput');
+    const galSpanInput = document.getElementById('galSpanInput');
+    const galImgUrlInput = document.getElementById('galImgUrlInput');
+    const galFileInput = document.getElementById('galFileInput');
+    const galImgPreviewBox = document.getElementById('galImgPreviewBox');
+    const galImgPreview = document.getElementById('galImgPreview');
+    const adminGalleryList = document.getElementById('adminGalleryList');
+
+    function resetGalForm() {
+      galEditId.value = '';
+      galTitleInput.value = '';
+      galCategoryInput.value = 'omra';
+      galSpanInput.value = 'normal';
+      galImgUrlInput.value = '';
+      galFileInput.value = '';
+      galImgPreview.src = '';
+      galImgPreviewBox.style.display = 'none';
+      document.getElementById('galFormTitle').textContent = '➕ إضافة صورة جديدة للمعرض';
+    }
+
+    btnOpenNewGal.addEventListener('click', () => {
+      resetGalForm();
+      galFormDrawer.style.display = 'block';
+      galFormDrawer.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    btnCancelGal.addEventListener('click', () => {
+      galFormDrawer.style.display = 'none';
+      resetGalForm();
+    });
+
+    document.querySelectorAll('#galPresetsRow .preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.getAttribute('data-url');
+        galImgUrlInput.value = url;
+        galImgPreview.src = url;
+        galImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    galImgUrlInput.addEventListener('input', () => {
+      const url = galImgUrlInput.value.trim();
+      if (url) {
+        galImgPreview.src = url;
+        galImgPreviewBox.style.display = 'block';
+      } else {
+        galImgPreviewBox.style.display = 'none';
+      }
+    });
+
+    galFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      compressImageFile(file, 900, 0.75, (compressedUrl) => {
+        galImgUrlInput.value = compressedUrl;
+        galImgPreview.src = compressedUrl;
+        galImgPreviewBox.style.display = 'block';
+      });
+    });
+
+    btnSaveGal.addEventListener('click', () => {
+      const title = galTitleInput.value.trim();
+      const category = galCategoryInput.value;
+      const categoryLabel = galCategoryInput.options[galCategoryInput.selectedIndex].text;
+      const span = galSpanInput.value;
+      const image = galImgUrlInput.value.trim();
+      const editId = galEditId.value;
+
+      if (!title || !image) {
+        alert('يرجى إدخال عنوان الصورة وتحديد رابطها أو رفعها.');
+        return;
+      }
+
+      if (editId) {
+        const idx = currentGallery.findIndex(g => g.id === editId);
+        if (idx !== -1) {
+          currentGallery[idx] = {
+            id: editId,
+            title,
+            category,
+            categoryLabel,
+            span,
+            image
+          };
+        }
+      } else {
+        const newImg = {
+          id: 'gal_' + Date.now(),
+          title,
+          category,
+          categoryLabel,
+          span,
+          image
+        };
+        currentGallery.push(newImg);
+      }
+
+      saveAllToLocalStorage();
+      renderAdminGalleryList();
+      galFormDrawer.style.display = 'none';
+      resetGalForm();
+      showAlert('✅ تم إضافة الصورة إلى المعرض بنجاح !');
+    });
+
+    function renderAdminGalleryList() {
+      if (!adminGalleryList) return;
+      adminGalleryList.innerHTML = '';
+
+      if (currentGallery.length === 0) {
+        adminGalleryList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px;">لا توجد صور في المعرض حالياً. انقر على "إضافة صورة للمعرض".</div>';
+        return;
+      }
+
+      currentGallery.forEach(item => {
+        const card = document.createElement('div');
+        card.style.background = 'rgba(255,255,255,0.03)';
+        card.style.border = '1px solid rgba(255,255,255,0.1)';
+        card.style.borderRadius = '12px';
+        card.style.overflow = 'hidden';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+
+        card.innerHTML = `
+          <div style="position: relative; height: 160px; background: #0B1B2B;">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width: 100%; height: 100%; object-fit: cover;">
+            <span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); color: #F8E7B9; font-size: 0.75rem; padding: 2px 10px; border-radius: 20px; font-weight: 700;">
+              ${escapeHtml(item.categoryLabel || item.category)}
+            </span>
+            ${item.span === 'span-2' ? '<span style="position: absolute; bottom: 8px; left: 8px; background: rgba(212,175,55,0.85); color: #071E33; font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; font-weight: 800;">بانورامي</span>' : ''}
+          </div>
+          <div style="padding: 14px; display: flex; flex-direction: column; flex: 1; text-align: right;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: #FFFFFF; margin-bottom: 12px; line-height: 1.4;">${escapeHtml(item.title)}</h4>
+            <div style="margin-top: auto; display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" class="btn-action-sm btn-delete-sm btn-delete-gal" data-id="${item.id}" style="width: 100%;">
+                <span>🗑️ حذف الصورة</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        adminGalleryList.appendChild(card);
+      });
+
+      document.querySelectorAll('.btn-delete-gal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (confirm('هل أنت متأكد من حذف هذه الصورة من المعرض؟')) {
+            currentGallery = currentGallery.filter(g => g.id !== id);
+            saveAllToLocalStorage();
+            renderAdminGalleryList();
+            showAlert('🗑️ تم حذف الصورة من المعرض');
+          }
+        });
+      });
+    }
+
+    // 6. Sauvegarde globale des données
+    function saveAllToLocalStorage() {
+      let existing = {};
+      try {
+        const saved = localStorage.getItem('challenge_travel_content');
+        if (saved) existing = JSON.parse(saved);
+      } catch(e) {}
+
       const data = {
+        ...existing,
         phone1: document.getElementById('cfgPhone1').value.trim(),
         phone2: document.getElementById('cfgPhone2').value.trim(),
         phoneFix: document.getElementById('cfgPhoneFix').value.trim(),
@@ -777,21 +1527,22 @@
         heroTitleAccent: document.getElementById('cfgHeroTitleAccent').value.trim(),
         heroSubtitle: document.getElementById('cfgHeroSubtitle').value.trim(),
 
-        pkg1Title: document.getElementById('cfgPkg1Title').value.trim(),
-        pkg1Price: document.getElementById('cfgPkg1Price').value.trim(),
-        pkg2Title: document.getElementById('cfgPkg2Title').value.trim(),
-        pkg2Price: document.getElementById('cfgPkg2Price').value.trim(),
-        pkg3Title: document.getElementById('cfgPkg3Title').value.trim(),
-        pkg3Price: document.getElementById('cfgPkg3Price').value.trim(),
-
         art1Title: document.getElementById('cfgArt1Title').value.trim(),
         art2Title: document.getElementById('cfgArt2Title').value.trim(),
         art3Title: document.getElementById('cfgArt3Title').value.trim(),
+
+        packages: currentPackages,
+        gallery: currentGallery,
         updatedAt: new Date().toISOString()
       };
 
       localStorage.setItem('challenge_travel_content', JSON.stringify(data));
-      showAlert('✅ تم حفظ كافة التعديلات بنجاح !');
+      window.dispatchEvent(new Event('storage'));
+    }
+
+    btnSaveAll.addEventListener('click', () => {
+      saveAllToLocalStorage();
+      showAlert('✅ تم حفظ كافة التعديلات والعروض والصور بنجاح !');
     });
 
     // 7. Mise à jour mot de passe
