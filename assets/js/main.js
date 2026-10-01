@@ -814,14 +814,47 @@ function initHeroQuickBooking() {
 
   if (!tabs.length || !packageSelect || !submitBtn) return;
 
-  const getAdminPrices = () => {
-    try {
-      const saved = localStorage.getItem('challenge_travel_content');
-      if (saved) return JSON.parse(saved);
-    } catch(e) {}
-    return null;
-  };
+  let adminData = {};
+  try {
+    const saved = localStorage.getItem('challenge_travel_content');
+    if (saved) adminData = JSON.parse(saved);
+  } catch(e) {}
 
+  // 1. Textes personnalisés de la carte
+  if (adminData.plannerTitle) {
+    const el = document.getElementById('heroCardTitle');
+    if (el) el.textContent = adminData.plannerTitle;
+  }
+  if (adminData.plannerSubtitle) {
+    const el = document.getElementById('heroCardDesc');
+    if (el) el.textContent = adminData.plannerSubtitle;
+  }
+  if (adminData.plannerBadge) {
+    const el = document.getElementById('heroCardBadge');
+    if (el) el.textContent = adminData.plannerBadge;
+  }
+  if (adminData.plannerBtnText) {
+    const el = document.getElementById('heroSubmitBtnText');
+    if (el) el.textContent = adminData.plannerBtnText;
+  }
+  if (adminData.plannerFooterText) {
+    const el = document.getElementById('heroCardFooter');
+    if (el) el.textContent = adminData.plannerFooterText;
+  }
+  if (adminData.plannerFeature1) {
+    const el = document.getElementById('heroPreviewDetail1');
+    if (el) el.textContent = adminData.plannerFeature1;
+  }
+  if (adminData.plannerFeature2) {
+    const el = document.getElementById('heroPreviewDetail2');
+    if (el) el.textContent = adminData.plannerFeature2;
+  }
+  if (adminData.plannerFeature3) {
+    const el = document.getElementById('heroPreviewDetail3');
+    if (el) el.textContent = adminData.plannerFeature3;
+  }
+
+  // 2. Options dynamiques pour chaque onglet
   const storedPkgs = getStoredPackages();
   const omraOptions = (storedPkgs && storedPkgs.length > 0)
     ? storedPkgs.map(p => ({
@@ -831,26 +864,48 @@ function initHeroQuickBooking() {
         tag: p.tag || 'باقة عمرة مميزة'
       }))
     : [
-        { text: `${adminData && adminData.pkg1Title ? adminData.pkg1Title : 'عمرة شهر رمضان المبارك'} (${adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج'})`, val: 'عمرة شهر رمضان المبارك', price: adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج', tag: 'باقة رمضان الروحانية 2026' },
-        { text: `${adminData && adminData.pkg2Title ? adminData.pkg2Title : 'عمرة رجب وشعبان'} (${adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج'})`, val: 'عمرة رجب وشعبان', price: adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج', tag: 'موسم رجب وشعبان المبارك' },
-        { text: 'عمرة اقتصادية مباشرة ومريحة (ابتداءً من 170,000 دج)', val: 'عمرة اقتصادية مباشرة', price: 'ابتداءً من 170,000 دج', tag: 'الخيار الاقتصادي الأوفر' },
-        { text: `${adminData && adminData.pkg3Title ? adminData.pkg3Title : 'عمرة VIP فنادق 5 نجوم'} (${adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج'})`, val: 'عمرة VIP 5 نجوم', price: adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج', tag: 'إقامة فاخرة مطلة على الحرم' }
+        { text: 'عمرة شهر رمضان المبارك 2026 (ابتداءً من 235,000 دج)', val: 'عمرة شهر رمضان المبارك 2026', price: 'ابتداءً من 235,000 دج', tag: 'موسم رمضان المبارك' },
+        { text: 'عمرة رجب وشعبان (المولد والمناسبات) (ابتداءً من 185,000 دج)', val: 'عمرة رجب وشعبان', price: 'ابتداءً من 185,000 دج', tag: 'موسم رجب وشعبان المبارك' },
+        { text: 'عمرة VIP فنادق 5 نجوم مطلة على الحرم (ابتداءً من 320,000 دج)', val: 'عمرة VIP فنادق 5 نجوم', price: 'ابتداءً من 320,000 دج', tag: 'إقامة فاخرة مطلة على الحرم' }
       ];
+
+  // Helper pour parser les options de texte ligne par ligne (Format: Titre | Prix/Note | Tag)
+  function parseCustomOptions(rawText, fallbackList) {
+    if (!rawText || !rawText.trim()) return fallbackList;
+    const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return fallbackList;
+    return lines.map(line => {
+      const parts = line.split('|').map(p => p.trim());
+      const title = parts[0] || '';
+      const price = parts[1] || 'استشارة مجانية ومطابقة';
+      const tag = parts[2] || title;
+      return {
+        text: price ? `${title} (${price})` : title,
+        val: title,
+        price: price,
+        tag: tag
+      };
+    });
+  }
+
+  const defaultVisaOptions = [
+    { text: 'تأشيرة سياحية إلكترونية (E-Visa) (معالجة فورية ومطابقة)', val: 'تأشيرة سياحية إلكترونية', price: 'معالجة فورية ومطابقة', tag: 'تأشيرة إلكترونية سريعة' },
+    { text: 'تأشيرة زيارة عائلية وشخصية (تدقيق شامل للوثائق)', val: 'تأشيرة زيارة عائلية/شخصية', price: 'تدقيق شامل للوثائق', tag: 'زيارات الأقارب والعائلات' },
+    { text: 'تأشيرة مرور (ترانزيت السعودية) (إصدار سريع وسلس)', val: 'تأشيرة ترانزيت', price: 'إصدار سريع وسلس', tag: 'توقف وترانزيت قصير' },
+    { text: 'استشارة وتدقيق ملف التأشيرة (استشارة مجانية معتمدة)', val: 'استشارة ملف تأشيرة', price: 'استشارة مجانية معتمدة', tag: 'توجيه قانوني وفني' }
+  ];
+
+  const defaultTravelOptions = [
+    { text: 'تذاكر طيران دولية وداخلية بأفضل الأسعار (حجوزات مؤكدة)', val: 'تذاكر طيران', price: 'أفضل أسعار الخطوط', tag: 'حجوزات طيران مؤكدة' },
+    { text: 'حجوزات فنادق مكة والمدينة المنورة (أسعار تفضيلية)', val: 'حجز فنادق الحرمين', price: 'أسعار تفضيلية مباشرة', tag: 'أبراج وفنادق الحرمين' },
+    { text: 'برامج سياحية عائلية مخصصة (رحلات حسب الطلب)', val: 'برنامج سياحي عائلي', price: 'برامج حسب رغبتكم', tag: 'سياحة عائلية متكاملة' },
+    { text: 'تنظيم رحلات المجموعات والوفود (تخفيضات خاصة)', val: 'رحلات مجموعات', price: 'تخفيضات للمجموعات', tag: 'مرافقة تنظيمية شاملة' }
+  ];
 
   const packageData = {
     omra: omraOptions,
-    visa: [
-      { text: 'تأشيرة سياحية إلكترونية (E-Visa)', val: 'تأشيرة سياحية إلكترونية', price: 'معالجة فورية ومطابقة', tag: 'تأشيرة إلكترونية سريعة' },
-      { text: 'تأشيرة زيارة عائلية وشخصية', val: 'تأشيرة زيارة عائلية/شخصية', price: 'تدقيق شامل للوثائق', tag: 'زيارات الأقارب والعائلات' },
-      { text: 'تأشيرة مرور (ترانزيت السعودية)', val: 'تأشيرة ترانزيت', price: 'إصدار سريع وسلس', tag: 'توقف وترانزيت قصير' },
-      { text: 'استشارة وتدقيق ملف التأشيرة', val: 'استشارة ملف تأشيرة', price: 'استشارة مجانية معتمدة', tag: 'توجيه قانوني وفني' }
-    ],
-    travel: [
-      { text: 'تذاكر طيران دولية وداخلية بأفضل الأسعار', val: 'تذاكر طيران', price: 'أفضل أسعار الخطوط', tag: 'حجوزات طيران مؤكدة' },
-      { text: 'حجوزات فنادق مكة والمدينة المنورة', val: 'حجز فنادق الحرمين', price: 'أسعار تفضيلية مباشرة', tag: 'أبراج وفنادق الحرمين' },
-      { text: 'برامج سياحية عائلية مخصصة', val: 'برنامج سياحي عائلي', price: 'برامج حسب رغبتكم', tag: 'سياحة عائلية متكاملة' },
-      { text: 'تنظيم رحلات المجموعات والوفود', val: 'رحلات مجموعات', price: 'تخفيضات للمجموعات', tag: 'مرافقة تنظيمية شاملة' }
-    ]
+    visa: parseCustomOptions(adminData.plannerVisaOptions, defaultVisaOptions),
+    travel: parseCustomOptions(adminData.plannerTravelOptions, defaultTravelOptions)
   };
 
   let currentService = 'omra';
@@ -866,32 +921,35 @@ function initHeroQuickBooking() {
     }
   };
 
-  packageSelect.addEventListener('change', updatePreview);
+  // Populate options function
+  const populateOptions = () => {
+    const options = packageData[currentService] || packageData.omra;
+    packageSelect.innerHTML = '';
+    options.forEach(opt => {
+      const optionEl = document.createElement('option');
+      optionEl.value = opt.val;
+      optionEl.textContent = opt.text;
+      packageSelect.appendChild(optionEl);
+    });
+    updatePreview();
+  };
+
+  // Populate immediately on load !
+  populateOptions();
+
+  packageSelect.onchange = updatePreview;
 
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.onclick = () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       currentService = tab.getAttribute('data-service') || 'omra';
-
-      // Mise à jour dynamique du sélecteur
-      const options = packageData[currentService] || packageData.omra;
-      packageSelect.innerHTML = '';
-      options.forEach(opt => {
-        const optionEl = document.createElement('option');
-        optionEl.value = opt.val;
-        optionEl.textContent = opt.text;
-        packageSelect.appendChild(optionEl);
-      });
-
-      updatePreview();
-    });
+      populateOptions();
+    };
   });
 
-  updatePreview();
-
   // Action directe lors du clic sur le bouton : redirection WhatsApp avec message prérempli
-  submitBtn.addEventListener('click', (e) => {
+  submitBtn.onclick = (e) => {
     e.preventDefault();
     const serviceName = currentService === 'omra' ? 'العمرة' : (currentService === 'visa' ? 'التأشيرة' : 'السياحة والطيران');
     const selectedPkg = packageSelect ? packageSelect.value : 'استفسار عام';
@@ -906,7 +964,7 @@ function initHeroQuickBooking() {
     const waPhone = getAdminWhatsApp();
     const whatsappUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-  });
+  };
 }
 
 /* ==========================================================================

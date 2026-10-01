@@ -602,6 +602,9 @@
         <button type="button" class="sidebar-btn" data-tab="tabHero">
           <span>🕌</span> الواجهة الرئيسية (الهيرو)
         </button>
+        <button type="button" class="sidebar-btn" data-tab="tabPlanner">
+          <span>⚡</span> استمارة التخطيط السريع والحاسبة
+        </button>
         <button type="button" class="sidebar-btn" data-tab="tabPackages">
           <span>🕋</span> عروض وباقات الأسفار
         </button>
@@ -690,6 +693,85 @@
               <label class="form-label">الفقرة الوصفية للهيرو</label>
               <textarea id="cfgHeroSubtitle" class="form-textarea" rows="3">نرافقكم بمهنية وإخلاص لزيارة الحرمين الشريفين بأفضل باقات العمرة، وتسهيلات التأشيرة، وأرقى الفنادق القريبة من الحرم بأفضل الأسعار.</textarea>
             </div>
+          </div>
+        </section>
+
+        <!-- TAB : HERO PLANNER & CALCULATOR -->
+        <section id="tabPlanner" class="tab-content" style="display: none;">
+          <div class="admin-card">
+            <h2 class="admin-card-title">⚡ حاسبة واستمارة التخطيط السريع في الهيرو</h2>
+            <p class="admin-card-desc">
+              التحكم الكامل في بطاقة الحجز السريع ("خطط لرحلتك المباركة بضغطة زر")، العناوين، شارات المعاينة، ونصوص الخدمات في القوائم المنسدلة.
+            </p>
+
+            <!-- 1. Textes & Titres de la Carte -->
+            <h3 style="color: var(--gold-400); font-size: 1.05rem; margin-top: 20px; margin-bottom: 14px;">📝 العناوين وشارات البطاقة</h3>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">عنوان البطاقة الرئيسي</label>
+                <input type="text" id="cfgPlannerTitle" class="form-input" value="خطط لرحلتك المباركة بضغطة زر">
+              </div>
+              <div class="form-group">
+                <label class="form-label">شارة أعلى البطاقة (Radar Badge)</label>
+                <input type="text" id="cfgPlannerBadge" class="form-input" value="استشارة مجانية وسعر فوري">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">الوصف التوجيهي تحت العنوان</label>
+              <input type="text" id="cfgPlannerSubtitle" class="form-input" value="حدد نوع الرحلة وتفاصيل السفر ليصلك عرض مفصل وشامل فوراً :">
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">نص زر الإرسال / الواتساب</label>
+                <input type="text" id="cfgPlannerBtnText" class="form-input" value="طلب تسعيرة وتفاصيل فورية">
+              </div>
+              <div class="form-group">
+                <label class="form-label">عبارة الأمان والخصوصية أسفل البطاقة</label>
+                <input type="text" id="cfgPlannerFooterText" class="form-input" value="بياناتكم محمية وسرية • استشارة مجانية بدون أي التزام">
+              </div>
+            </div>
+
+            <!-- 2. Points forts du bandeau aperçu -->
+            <h3 style="color: var(--gold-400); font-size: 1.05rem; margin-top: 24px; margin-bottom: 14px;">✨ المزايا الثلاث لشريط المعاينة المباشرة (Live Preview)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">تظهر هذه النقاط الثلاث داخل الشريط الذهبي للمعاينة تحت السعر الاستدلالي :</p>
+            <div class="grid-3">
+              <div class="form-group">
+                <label class="form-label">الميزة الأولى</label>
+                <input type="text" id="cfgPlannerFeature1" class="form-input" value="طيران مباشر ومريح">
+              </div>
+              <div class="form-group">
+                <label class="form-label">الميزة الثانية</label>
+                <input type="text" id="cfgPlannerFeature2" class="form-input" value="فنادق مختارة بجوار الحرم">
+              </div>
+              <div class="form-group">
+                <label class="form-label">الميزة الثالثة</label>
+                <input type="text" id="cfgPlannerFeature3" class="form-input" value="مرشد ديني ولوجستي مرافق">
+              </div>
+            </div>
+
+            <!-- 3. الربط مع باقات العمرة -->
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 16px 20px; margin-top: 20px; margin-bottom: 24px;">
+              <h4 style="color: var(--success); font-size: 0.95rem; margin-bottom: 6px;">🕋 قسم «العمرة المباركة» مرتبط تلقائياً :</h4>
+              <p style="font-size: 0.86rem; color: rgba(255,255,255,0.85); line-height: 1.6; margin: 0;">
+                خيارات القائمة المنسدلة لقسم العمرة يتم سحبها وتحديثها <strong>تلقائياً</strong> من باقات العمرة المسجلة في تبويب <strong>«🕋 عروض وباقات الأسفار»</strong>، بما في ذلك العنوان، السعر بالدينار، والشارة الترويجية.
+              </p>
+            </div>
+
+            <!-- 4. Options Visa et Tourisme -->
+            <h3 style="color: var(--gold-400); font-size: 1.05rem; margin-top: 24px; margin-bottom: 14px;">🇸🇦 خيارات قسم «تأشيرة السعودية» في القائمة المنسدلة</h3>
+            <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 8px;">أدخل كل خيار في سطر بالصيغة: <code>اسم الخدمة | الملاحظة أو السعر | الشارة الترويجية</code></p>
+            <div class="form-group">
+              <textarea id="cfgPlannerVisaOptions" class="form-textarea" rows="4" dir="rtl" placeholder="تأشيرة سياحية إلكترونية (E-Visa) | معالجة فورية ومطابقة | تأشيرة إلكترونية سريعة&#10;تأشيرة زيارة عائلية وشخصية | تدقيق شامل للوثائق | زيارات الأقارب والعائلات&#10;تأشيرة مرور (ترانزيت السعودية) | إصدار سريع وسلس | توقف وترانزيت قصير&#10;استشارة وتدقيق ملف التأشيرة | استشارة مجانية معتمدة | توجيه قانوني وفني"></textarea>
+            </div>
+
+            <h3 style="color: var(--gold-400); font-size: 1.05rem; margin-top: 24px; margin-bottom: 14px;">✈️ خيارات قسم «سياحة وطيران» في القائمة المنسدلة</h3>
+            <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 8px;">أدخل كل خيار في سطر بالصيغة: <code>اسم الخدمة | الملاحظة أو السعر | الشارة الترويجية</code></p>
+            <div class="form-group">
+              <textarea id="cfgPlannerTravelOptions" class="form-textarea" rows="4" dir="rtl" placeholder="تذاكر طيران دولية وداخلية بأفضل الأسعار | أفضل أسعار الخطوط | حجوزات طيران مؤكدة&#10;حجوزات فنادق مكة والمدينة المنورة | أسعار تفضيلية مباشرة | أبراج وفنادق الحرمين&#10;برامج سياحية عائلية مخصصة | برامج حسب رغبتكم | سياحة عائلية متكاملة&#10;تنظيم رحلات المجموعات والوفود | تخفيضات للمجموعات | مرافقة تنظيمية شاملة"></textarea>
+            </div>
+
           </div>
         </section>
 
@@ -1228,6 +1310,18 @@
       if (data.heroTitle1) document.getElementById('cfgHeroTitle1').value = data.heroTitle1;
       if (data.heroTitleAccent) document.getElementById('cfgHeroTitleAccent').value = data.heroTitleAccent;
       if (data.heroSubtitle) document.getElementById('cfgHeroSubtitle').value = data.heroSubtitle;
+
+      // Charger les données de la calculatrice / planning rapide
+      if (data.plannerTitle) document.getElementById('cfgPlannerTitle').value = data.plannerTitle;
+      if (data.plannerBadge) document.getElementById('cfgPlannerBadge').value = data.plannerBadge;
+      if (data.plannerSubtitle) document.getElementById('cfgPlannerSubtitle').value = data.plannerSubtitle;
+      if (data.plannerBtnText) document.getElementById('cfgPlannerBtnText').value = data.plannerBtnText;
+      if (data.plannerFooterText) document.getElementById('cfgPlannerFooterText').value = data.plannerFooterText;
+      if (data.plannerFeature1) document.getElementById('cfgPlannerFeature1').value = data.plannerFeature1;
+      if (data.plannerFeature2) document.getElementById('cfgPlannerFeature2').value = data.plannerFeature2;
+      if (data.plannerFeature3) document.getElementById('cfgPlannerFeature3').value = data.plannerFeature3;
+      if (data.plannerVisaOptions) document.getElementById('cfgPlannerVisaOptions').value = data.plannerVisaOptions;
+      if (data.plannerTravelOptions) document.getElementById('cfgPlannerTravelOptions').value = data.plannerTravelOptions;
 
       // Charger les forfaits
       if (Array.isArray(data.packages) && data.packages.length > 0) {
@@ -1826,6 +1920,17 @@
         heroTitle1: document.getElementById('cfgHeroTitle1').value.trim(),
         heroTitleAccent: document.getElementById('cfgHeroTitleAccent').value.trim(),
         heroSubtitle: document.getElementById('cfgHeroSubtitle').value.trim(),
+
+        plannerTitle: document.getElementById('cfgPlannerTitle').value.trim(),
+        plannerBadge: document.getElementById('cfgPlannerBadge').value.trim(),
+        plannerSubtitle: document.getElementById('cfgPlannerSubtitle').value.trim(),
+        plannerBtnText: document.getElementById('cfgPlannerBtnText').value.trim(),
+        plannerFooterText: document.getElementById('cfgPlannerFooterText').value.trim(),
+        plannerFeature1: document.getElementById('cfgPlannerFeature1').value.trim(),
+        plannerFeature2: document.getElementById('cfgPlannerFeature2').value.trim(),
+        plannerFeature3: document.getElementById('cfgPlannerFeature3').value.trim(),
+        plannerVisaOptions: document.getElementById('cfgPlannerVisaOptions').value.trim(),
+        plannerTravelOptions: document.getElementById('cfgPlannerTravelOptions').value.trim(),
 
         packages: currentPackages,
         gallery: currentGallery,
