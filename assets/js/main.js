@@ -783,31 +783,56 @@ function initHeroQuickBooking() {
   const periodSelect = document.getElementById('heroPeriodSelect');
   const phoneInput = document.getElementById('heroPhoneInput');
   const submitBtn = document.getElementById('heroSubmitBtn');
+  const previewTag = document.getElementById('heroPreviewTag');
+  const previewPrice = document.getElementById('heroPreviewPrice');
 
   if (!tabs.length || !packageSelect || !submitBtn) return;
 
+  const getAdminPrices = () => {
+    try {
+      const saved = localStorage.getItem('challenge_travel_content');
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return null;
+  };
+
+  const adminData = getAdminPrices();
+
   const packageData = {
     omra: [
-      { text: 'عمرة شهر رمضان المبارك (باقات متنوعة)', val: 'عمرة شهر رمضان المبارك' },
-      { text: 'عمرة رجب وشعبان (المولد والمناسبات)', val: 'عمرة رجب وشعبان' },
-      { text: 'عمرة اقتصادية مباشرة ومريحة', val: 'عمرة اقتصادية' },
-      { text: 'عمرة VIP فنادق 5 نجوم مطلة على الحرم', val: 'عمرة VIP 5 نجوم' }
+      { text: `${adminData && adminData.pkg1Title ? adminData.pkg1Title : 'عمرة شهر رمضان المبارك'} (${adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج'})`, val: 'عمرة شهر رمضان المبارك', price: adminData && adminData.pkg1Price ? adminData.pkg1Price : 'ابتداءً من 235,000 دج', tag: 'باقة رمضان الروحانية 2026' },
+      { text: `${adminData && adminData.pkg2Title ? adminData.pkg2Title : 'عمرة رجب وشعبان'} (${adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج'})`, val: 'عمرة رجب وشعبان', price: adminData && adminData.pkg2Price ? adminData.pkg2Price : 'ابتداءً من 185,000 دج', tag: 'موسم رجب وشعبان المبارك' },
+      { text: 'عمرة اقتصادية مباشرة ومريحة (ابتداءً من 170,000 دج)', val: 'عمرة اقتصادية مباشرة', price: 'ابتداءً من 170,000 دج', tag: 'الخيار الاقتصادي الأوفر' },
+      { text: `${adminData && adminData.pkg3Title ? adminData.pkg3Title : 'عمرة VIP فنادق 5 نجوم'} (${adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج'})`, val: 'عمرة VIP 5 نجوم', price: adminData && adminData.pkg3Price ? adminData.pkg3Price : 'ابتداءً من 320,000 دج', tag: 'إقامة فاخرة مطلة على الحرم' }
     ],
     visa: [
-      { text: 'تأشيرة سياحية إلكترونية (E-Visa)', val: 'تأشيرة سياحية إلكترونية' },
-      { text: 'تأشيرة زيارة عائلية وشخصية', val: 'تأشيرة زيارة عائلية/شخصية' },
-      { text: 'تأشيرة مرور (ترانزيت السعودية)', val: 'تأشيرة ترانزيت' },
-      { text: 'استشارة وتدقيق ملف التأشيرة', val: 'استشارة ملف تأشيرة' }
+      { text: 'تأشيرة سياحية إلكترونية (E-Visa)', val: 'تأشيرة سياحية إلكترونية', price: 'معالجة فورية ومطابقة', tag: 'تأشيرة إلكترونية سريعة' },
+      { text: 'تأشيرة زيارة عائلية وشخصية', val: 'تأشيرة زيارة عائلية/شخصية', price: 'تدقيق شامل للوثائق', tag: 'زيارات الأقارب والعائلات' },
+      { text: 'تأشيرة مرور (ترانزيت السعودية)', val: 'تأشيرة ترانزيت', price: 'إصدار سريع وسلس', tag: 'توقف وترانزيت قصير' },
+      { text: 'استشارة وتدقيق ملف التأشيرة', val: 'استشارة ملف تأشيرة', price: 'استشارة مجانية معتمدة', tag: 'توجيه قانوني وفني' }
     ],
     travel: [
-      { text: 'تذاكر طيران دولية وداخلية بأفضل الأسعار', val: 'تذاكر طيران' },
-      { text: 'حجوزات فنادق مكة والمدينة المنورة', val: 'حجز فنادق الحرمين' },
-      { text: 'برامج سياحية عائلية مخصصة', val: 'برنامج سياحي عائلي' },
-      { text: 'تنظيم رحلات المجموعات والوفود', val: 'رحلات مجموعات' }
+      { text: 'تذاكر طيران دولية وداخلية بأفضل الأسعار', val: 'تذاكر طيران', price: 'أفضل أسعار الخطوط', tag: 'حجوزات طيران مؤكدة' },
+      { text: 'حجوزات فنادق مكة والمدينة المنورة', val: 'حجز فنادق الحرمين', price: 'أسعار تفضيلية مباشرة', tag: 'أبراج وفنادق الحرمين' },
+      { text: 'برامج سياحية عائلية مخصصة', val: 'برنامج سياحي عائلي', price: 'برامج حسب رغبتكم', tag: 'سياحة عائلية متكاملة' },
+      { text: 'تنظيم رحلات المجموعات والوفود', val: 'رحلات مجموعات', price: 'تخفيضات للمجموعات', tag: 'مرافقة تنظيمية شاملة' }
     ]
   };
 
   let currentService = 'omra';
+
+  const updatePreview = () => {
+    if (!previewTag || !previewPrice) return;
+    const options = packageData[currentService] || packageData.omra;
+    const selectedIdx = packageSelect.selectedIndex >= 0 ? packageSelect.selectedIndex : 0;
+    const currentOpt = options[selectedIdx] || options[0];
+    if (currentOpt) {
+      previewTag.textContent = currentOpt.tag || 'العرض الأنسب لموسم 2026';
+      previewPrice.textContent = currentOpt.price || 'ابتداءً من 235,000 دج';
+    }
+  };
+
+  packageSelect.addEventListener('change', updatePreview);
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -824,8 +849,12 @@ function initHeroQuickBooking() {
         optionEl.textContent = opt.text;
         packageSelect.appendChild(optionEl);
       });
+
+      updatePreview();
     });
   });
+
+  updatePreview();
 
   // Action directe lors du clic sur le bouton : redirection WhatsApp avec message prérempli
   submitBtn.addEventListener('click', (e) => {
@@ -937,7 +966,7 @@ function applyAdminCustomizations() {
 
     // 4. Hero Section (titre, sous-titre, badge)
     if (data.heroBadge) {
-      const badge = document.querySelector('.hero-badge span:last-child');
+      const badge = document.querySelector('.hero-badge-luxury .badge-text') || document.querySelector('.hero-badge span:last-child');
       if (badge) badge.textContent = data.heroBadge;
     }
 
@@ -963,11 +992,15 @@ function applyAdminCustomizations() {
     // 5. Options du sélecteur rapide de forfaits dans le Hero
     if (data.pkg1Title || data.pkg2Title || data.pkg3Title) {
       const packageSelect = document.getElementById('heroPackageSelect');
+      const previewPrice = document.getElementById('heroPreviewPrice');
       if (packageSelect && packageSelect.options) {
         if (data.pkg1Title && packageSelect.options[0]) {
           const priceSuffix = data.pkg1Price ? ` (${data.pkg1Price})` : '';
           packageSelect.options[0].textContent = `${data.pkg1Title}${priceSuffix}`;
           packageSelect.options[0].value = data.pkg1Title;
+          if (previewPrice && data.pkg1Price && packageSelect.selectedIndex === 0) {
+            previewPrice.textContent = data.pkg1Price;
+          }
         }
         if (data.pkg2Title && packageSelect.options[1]) {
           const priceSuffix = data.pkg2Price ? ` (${data.pkg2Price})` : '';
