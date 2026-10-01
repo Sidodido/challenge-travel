@@ -970,17 +970,17 @@ function applyAdminCustomizations() {
       if (badge) badge.textContent = data.heroBadge;
     }
 
-    if (data.heroTitle1 || data.heroTitleAccent) {
+    if (data.heroTitle1 || data.heroTitleAccent !== undefined) {
       const heroTitle = document.querySelector('.hero-title');
       if (heroTitle) {
         let html = '';
         if (data.heroTitle1) {
-          html += `${data.heroTitle1}<br>`;
+          html += data.heroTitle1;
         }
-        if (data.heroTitleAccent) {
-          html += `<span class="hero-title-accent">${data.heroTitleAccent}</span>`;
+        if (data.heroTitleAccent && data.heroTitleAccent.trim()) {
+          html += `<br><span class="hero-title-accent">${data.heroTitleAccent}</span>`;
         }
-        heroTitle.innerHTML = html;
+        if (html) heroTitle.innerHTML = html;
       }
     }
 
